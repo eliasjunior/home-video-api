@@ -34,7 +34,7 @@ function converter(file, path) {
 }
 
 function main() {
-  const path = '/Users/eliasmj/Documents/Vuze Downloads/True.Detective.S03E05.720p.WEB.H264-METCON[ettv]/';
+  const path = '/Users/eliasmj/Documents/Vuze Downloads/Logan.2017.1080p.HC.HDRip.X264.AC3-EVO[EtHD]/';
   const extention = '.mkv';
   files = getFilesFromFolder(path).filter(file => file.includes(extention));
   converter(files.shift(), path);

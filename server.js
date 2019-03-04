@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const VideosRouter = require('./src/movies/routers/MoviesRouter');
-const cors = require('cors');
+const VideosRouter = require('./src/routers/VideosRouter');
 
 let app = express();
 
@@ -10,14 +9,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname))
 
 const port = process.env.PORT || 8080;
-// DELETE CORS
-app.use(cors())
-app.options('*', cors()) 
-// ***
+
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
 
     if ('OPTIONS' === req.method) {
         res.sendStatus(200);
