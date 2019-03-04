@@ -1,4 +1,4 @@
-const { getStartEndBytes } = require('./VideoStreamingService');
+const { getStartEndBytes } = require('./StreamingUtil');
 
 describe('VideoStreamingService', () => {
     it('should get start, end position from head range', () => {

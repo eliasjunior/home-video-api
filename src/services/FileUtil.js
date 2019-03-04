@@ -15,18 +15,6 @@ function getFileDirInfo(fullPath) {
         throw Error(error)
     }
 }
-//TODO: delete if it not using
-function filterFiles(fileName) {
-    const info = getFileDirInfo(`${videosLocation}/${name}`)
-    console.log(info.isFile());
-
-    if (info.isFile()) {
-        return
-    } else {
-        return items.filter(name => name.indexOf('DS_Store') !== 0)
-    }
-}
-
 function getFiles({ baseLocation, videosLocation }) {
     const filepath = baseLocation + videosLocation;
     const folders = readFolder(filepath);
