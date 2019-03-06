@@ -16,7 +16,7 @@ function getHeadStream(start, end, size) {
     }
 }
 function getStartEndBytes(range, size) {
-   // console.log('range', range)
+    console.log('range', range, size)
     const initStr = 'bytes=';
     const initStrLength = initStr.length;
     const initialIndex = range.indexOf(initStr) + initStrLength

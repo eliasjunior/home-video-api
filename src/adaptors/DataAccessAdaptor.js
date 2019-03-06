@@ -17,7 +17,10 @@ function readFiles({type, folderName = ''}) {
  */
 function loadMovieDetails(folderName) {
   const videosLocation = `/${USER_LOCATION}/${MOVIES_LOCATION}/${folderName}`
-  return dataSource.getFileInfo(videosLocation);
+  return {
+    stats: dataSource.getFileInfo(videosLocation),
+    location: videosLocation
+  };
 }
 
 module.exports = {
