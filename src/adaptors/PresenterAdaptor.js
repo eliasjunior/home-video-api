@@ -13,8 +13,8 @@ function loadMovie(folderName) {
   return getMovie(folderName)
 }
 
-function getGetFileDetails(folderName) {
-  return getMovieDetails(folderName)
+function getGetFileDetails(folderName, fileName) {
+  return getMovieDetails(folderName, fileName)
 }
 
 module.exports = {

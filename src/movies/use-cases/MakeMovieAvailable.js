@@ -10,8 +10,8 @@ function getMovie(movieName) {
   return Movie.makeMedia({ name: movieName, files });
 }
 
-function getMovieDetails(folderName) {
-  return DataAdaptor.loadMovieDetails(folderName)
+function getMovieDetails(folderName, fileName) {
+  return DataAdaptor.loadMovieDetails(folderName, fileName)
 }
 
 function getAllCourses() {

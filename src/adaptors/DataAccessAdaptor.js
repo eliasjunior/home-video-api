@@ -15,8 +15,8 @@ function readFiles({type, folderName = ''}) {
 /**
  * @param {string} folderName 
  */
-function loadMovieDetails(folderName) {
-  const videosLocation = `/${USER_LOCATION}/${MOVIES_LOCATION}/${folderName}`
+function loadMovieDetails(folderName, fileName) {
+  const videosLocation = `/${USER_LOCATION}/${MOVIES_LOCATION}/${folderName}/${fileName}`
   return {
     stats: dataSource.getFileInfo(videosLocation),
     location: videosLocation

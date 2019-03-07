@@ -21,10 +21,11 @@ router.get('/movies/stream/:id', (request, response) => {
   const requestAdapted = requestAdapt(request);
   const { headers, params } = requestAdapted;
   const { id } = params;
-
-  const movieDetails = getGetFileDetails(id)
-
+  
   const movie = loadMovie(id)
+  const fileName = movie.files[0]
+  const movieDetails = getGetFileDetails(id, fileName)
+
 
   console.log(`fullpath ${movieDetails.location + '/'+ movie.files[0]}`);
   
@@ -37,7 +38,7 @@ router.get('/movies/stream/:id', (request, response) => {
 
     //const videoStream = VideoStreamingService.createStream({ fullPath: movieData, start, end })
     const videoStream = fs
-      .createReadStream(movieDetails.location + '/'+ movie.files[0], { start, end });
+      .createReadStream(movieDetails.location + '/'+ fileName, { start, end });
 
     // adapt the response ? 
     //********************** StreamingUtil.streamListener ********************** */

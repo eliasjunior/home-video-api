@@ -1,3 +1,18 @@
+function streamListener(videoStream, response) {
+    videoStream.on('open', () => {
+        console.log('Stream Opened!');
+        videoStream.pipe(response);
+    })
+
+    videoStream.on('close', () => {
+        console.log('Stream has been Closed');
+    })
+
+    videoStream.on('error', error => {
+        console.log('ERROR ###################')
+        console.log(error)
+    })
+}
 function getHeadStream(start, end, size) {
     const chunksize = (end - start) + 1;
     console.log('#chunksize', chunksize)
@@ -16,7 +31,7 @@ function getHeadStream(start, end, size) {
     }
 }
 function getStartEndBytes(range, size) {
-    console.log('range', range, size)
+    console.log('range', range)
     const initStr = 'bytes=';
     const initStrLength = initStr.length;
     const initialIndex = range.indexOf(initStr) + initStrLength
@@ -30,11 +45,12 @@ function getStartEndBytes(range, size) {
     if (start > end) {
         end = start;
     }
-    // console.log('start', start)
-    // console.log('end', end)
+    console.log('start', start)
+    console.log('end', end)
     return { start, end }
 }
 module.exports = {
     getStartEndBytes,
     getHeadStream,
+    streamListener
 }
