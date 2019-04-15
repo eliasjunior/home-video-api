@@ -1,4 +1,4 @@
-function getHeadStream({ startChunk, endChunk, fileSizeInBytes }) {
+function getStreamHeader({ startChunk, endChunk, fileSizeInBytes }) {
   const chunksize = getChunkSize(startChunk, endChunk);
   if (Number.isInteger(startChunk)) {
     return {
@@ -15,7 +15,7 @@ function getHeadStream({ startChunk, endChunk, fileSizeInBytes }) {
   }
 }
 //TODO: need to add test here, edge cases, size, range
-function getStartEndBytes(range, size) {
+function getStartEndChunkInBytes(range, size) {
   const initStr = 'bytes=';
   const initStrLength = initStr.length;
   const initialIndex = range.indexOf(initStr) + initStrLength
@@ -36,7 +36,7 @@ function getChunkSize(startChunk, endChunk) {
   return (endChunk - startChunk) + 1
 }
 module.exports = {
-  getStartEndBytes,
-  getHeadStream,
+  getStartEndChunkInBytes,
+  getStreamHeader,
   getChunkSize
 }

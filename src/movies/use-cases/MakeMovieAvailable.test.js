@@ -1,6 +1,7 @@
 const {
   getAllMovies,
-  getMovie,
+  getMovieByName,
+  getVideoName,
 } = require('./MakeMovieAvailable');
 
 jest.mock('../../persistence/FileHelper')
@@ -28,7 +29,7 @@ describe('use case get media', () => {
       name: 'Conan The Barberian',
       id: 'Conan.The.Barberian',
     }
-    expect(getMovie('Conan.The.Barberian')).toEqual(expected);
+    expect(getMovieByName('Conan.The.Barberian')).toEqual(expected);
   });
   it('should get all movies folder and make the content for each', () => {
     const movies = getAllMovies()
@@ -39,8 +40,27 @@ describe('use case get media', () => {
     }
     const moviesFilled = movies.map(movieName => {
       require('FileHelper').setCurretMockFiles(mockFolders[movieName]);
-      return getMovie(movieName)
+      return getMovieByName(movieName)
     })
     expect(moviesFilled[0]).toEqual(expected)
+  })
+
+  it('should return the video format from the list', () => {
+    const files = ['Ghostbuster.1985.VIP.jpg','Ghostbuster.1985.VIP.mvv', 'Ghostbuster.1985.mp4']
+    expect(getVideoName(files)).toBe('Ghostbuster.1985.mp4')
+
+    const anotherFormat = ['Ghostbuster.1985.VIP.jpg','Ghostbuster.1985.VIP.mvv', 'Ghostbuster.1985.mkv']
+    expect(getVideoName(anotherFormat)).toBe('Ghostbuster.1985.mkv')
+  })
+
+  it('should thrown an exception', () => {
+    const withNoMP4 = ['Ghostbuster.1985.VIP.jpg','Ghostbuster.1985.VIP.mvv', 'Ghostbuster.1985.avi']
+    expect(() => {
+      getVideoName(withNoMP4)
+    }).toThrowError()
+
+    expect(() => {
+      getVideoName()
+    }).toThrowError()
   })
 });

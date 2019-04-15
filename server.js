@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const VideosRouter = require('./src/movies/routers/MoviesRouter');
+const StreamRouter = require('./src/stream-channel/router/StreamRouter');
 
 let app = express();
 
@@ -23,6 +24,7 @@ app.use(function (req, res, next) {
     }
 });
 app.use('/', VideosRouter);
+app.use('/', StreamRouter);
 
 app.listen(port, () => {
     console.log("Application started. Listening on port:" + port)

@@ -1,24 +1,18 @@
 const {
   getAllMovies,
-  getMovie,
+  getMovieByName,
   getMovieDetails,
+  getVideoName,
 } = require('../movies').mediaUseCase
 
 function loadMovies() {
-  const loadFolders = folderName => getMovie(folderName)
+  const loadFolders = folderName => getMovieByName(folderName)
   return getAllMovies().map(loadFolders);
-}
-
-function loadMovie(folderName) {
-  return getMovie(folderName)
-}
-
-function getGetFileDetails(folderName, fileName) {
-  return getMovieDetails(folderName, fileName)
 }
 
 module.exports = {
   loadMovies,
-  loadMovie,
-  getGetFileDetails,
+  getMovieByName,
+  getMovieDetails,
+  getVideoName,
 }

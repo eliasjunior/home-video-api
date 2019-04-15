@@ -1,5 +1,5 @@
 const { 
-  getHeadStream, 
+  getStreamHeader, 
   getChunkSize } = require('./MakeVideoPartsAvaialable');
 
 describe('MakeVideoPartsAvaialable', () => {
@@ -19,8 +19,8 @@ describe('MakeVideoPartsAvaialable', () => {
       'Content-Type' : 'video/mp4'
     }
 
-    expect(getHeadStream(head)).toEqual(expected)
+    expect(getStreamHeader(head)).toEqual(expected)
   })
 
-  xit('should getStartEndBytes ', () => {})
+  xit('should getStartEndChunkInBytes ', () => {})
 })
