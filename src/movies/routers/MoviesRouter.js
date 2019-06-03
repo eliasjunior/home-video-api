@@ -1,41 +1,38 @@
-const router = require('express').Router();
-
-const {
+import { flush } from '../../Helper';
+import { requestAdapter } from '../../HttpAdapter';
+import {
   loadMovies,
   loadMovie,
   getMovieDetails,
-} = require('../../adaptors/PresenterAdaptor');
+} from '../../adaptors/PresenterAdaptor';
+import express from 'express';
+const router = express.Router();
 
-router.get('/movies', (req, response) => {
-  flush(response, loadMovies());
-})
+function getMovies(req, response) {
+  flush({response, body: loadMovies(), status: 200});
+}
 
-router.get('/movies/image/:id', (req, response) => {
-  const requestAdapted = requestAdapt(request);
+function getMovieImage(req, response) {
+  const requestAdapted = requestAdapter(request);
   const { id: folder } = requestAdapted.params;
 
   const movie = loadMovie(folder);
-  const movieImage = getImage(movie.files);
+  const movieImage = getImage(movie);
   const imageDetails = getMovieDetails(folder, movieImage)
   const movieFullPath = `${imageDetails.location}`;
+  response.sendFile(movieFullPath);
+}
 
-  console.log(movieFullPath)
+router.get('/movies', getMovies);
+router.get('/movies/image/:id', getMovieImage)
 
-  response.sendFile(movieFullPath)
-})
+export default router;
 
-function getImage() {
+// Private functions
+function getImage({files}) {
+  const EXTENSION_SIZE = -3
   const listImages = ['jpg', 'png', 'jpeg'];
   return files
-    .filter(file => listImages.some(ext => ext === file.slice(-3)) )
+    .filter(file => listImages.some(ext => ext === file.slice(EXTENSION_SIZE)) )
     .pop()
 }
-
-function flush(response, videos) {
-  response
-    .status(200)
-    .json(videos)
-    .end();
-}
-
-module.exports = router

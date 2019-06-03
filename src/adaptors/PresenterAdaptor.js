@@ -1,18 +1,19 @@
-const {
+import {
   getAllMovies,
   getMovieByName,
   getMovieDetails,
   getVideoName,
-} = require('../movies').mediaUseCase
+} from '../movies';
 
 function loadMovies() {
   const loadFolders = folderName => getMovieByName(folderName)
   return getAllMovies().map(loadFolders);
 }
-
-module.exports = {
+const Presenter = {
   loadMovies,
   getMovieByName,
   getMovieDetails,
   getVideoName,
 }
+export default Presenter;
+

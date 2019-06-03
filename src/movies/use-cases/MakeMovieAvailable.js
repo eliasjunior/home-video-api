@@ -1,6 +1,6 @@
 const DataAdaptor = require('../../adaptors/DataAccessAdaptor');
 const Movie = require('../entities/Movie');
-const {VALID_FORMATS} = require('../../AppServerContant')
+const { VALID_FORMATS } = require('../../AppServerConstant')
 
 function getAllMovies() {
   return DataAdaptor.readFiles({ type: 'MOVIE' });
@@ -21,7 +21,7 @@ function getVideoName(files) {
     return VALID_FORMATS.has(format)
   }).pop();
 
-  if(!result) {
+  if (!result) {
     throw Error('File not found in the list')
   }
   return result;

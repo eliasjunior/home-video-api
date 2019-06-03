@@ -1,5 +1,5 @@
 module.exports = {
-  requestAdapt: ({ params = {},
+  requestAdapter: ({ params = {},
     body = {},
     method = '',
     headers = {}

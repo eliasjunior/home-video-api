@@ -1,5 +1,5 @@
 const { MOVIES_LOCATION,
-  USER_LOCATION } = require('../AppServerContant')
+  USER_LOCATION } = require('../AppServerConstant')
 const dataSource = require('../persistence/FileHelper')
 
 function readFiles({type, folderName = ''}) {

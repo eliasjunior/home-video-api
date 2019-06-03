@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { VALID_FORMATS } = require('../AppServerContant')
+const { VALID_FORMATS } = require('../AppServerConstant')
 
 function readFolder(videosLocation) {
     const FIRST_INDEX = 0;

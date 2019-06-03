@@ -1,6 +1,4 @@
-function requestParameter(label) {
-  return Error(`${label} is required`);
-}
+import { requestParameter } from '../../Helper';
 
 function Movie() {
   return {
