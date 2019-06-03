@@ -10,6 +10,7 @@ function getFilesFromFolder(videosLocation) {
 
 function converter(file, path) {
     console.log(`---- Converting --> ${file}`);
+    console.log(new Date().toString())
     
     hbjs.spawn({ input: `${path}/${file}`, output:`${path}/${file}.mp4` })
     .on('error', err => {
@@ -29,12 +30,14 @@ function converter(file, path) {
       } else {
         console.log(`COMPLETED!`);
         console.log(`##################################`);
+        console.log(new Date().toString())
       }
     })
 }
 
 function main() {
-  const path = '/Users/eliasmj/Documents/Vuze Downloads/Logan.2017.1080p.HC.HDRip.X264.AC3-EVO[EtHD]/';
+  const data = JSON.parse(fs.readFileSync(__dirname + '/converter-setup.json'))
+  const path = `${data.moviesPath}/${data.movieFolder}/`;
   const extention = '.mkv';
   files = getFilesFromFolder(path).filter(file => file.includes(extention));
   converter(files.shift(), path);

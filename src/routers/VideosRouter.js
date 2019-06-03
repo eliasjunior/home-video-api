@@ -49,6 +49,13 @@ router.get('/videos/:folder/:fileName', (request, response) => {
     }
     VideoStreamingService.readOrStream(options);
 });
+router.get('/captions/:folder/:fileName', (request, response) => {
+  let baseLocation = AppServerConstatnt.USER_LOCATION
+  const { folder, fileName } = request.params;
+  baseLocation =  baseLocation.concat(AppServerConstatnt.MOVIES_LOCATION);
+
+  response.sendFile(baseLocation + '/' + folder + '/' + fileName)
+})
 function flush(response, videos) {
     response
         .status(200)
