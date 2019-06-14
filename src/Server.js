@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import VideosRouter from './movies/routers/MoviesRouter';
+import BoxRouter from './box/routers/BoxRouter';
 //const StreamRouter = require('./src/stream-channel/router/StreamRouter');
 
 let app = express();
@@ -24,6 +25,7 @@ app.use(function (req, res, next) {
   }
 });
 app.use('/', VideosRouter);
+app.use('/', BoxRouter);
 //app.use('/', StreamRouter);
 
 app.listen(port, () => {

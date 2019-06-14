@@ -4,16 +4,17 @@ import {
   getMovieDetails,
   getVideoName,
 } from '../movies';
+import useCaseBox from '../box';
 
-function loadMovies() {
-  const loadFolders = folderName => getMovieByName(folderName)
-  return getAllMovies().map(loadFolders);
-}
 const Presenter = {
-  loadMovies,
+  loadMovies: function() {
+    const loadFolders = folderName => getMovieByName(folderName)
+    return getAllMovies().map(loadFolders);
+  },
   getMovieByName,
   getMovieDetails,
   getVideoName,
+  listFolders: useCaseBox.loadBox,
 }
 export default Presenter;
 

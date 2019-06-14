@@ -1,4 +1,5 @@
-const makeMedia = require('./Movie').makeMedia;
+import Movie from './Movie';
+const { makeMedia } = Movie;
 
 describe('Entity Media', () => {
   it('should pass the name of the media and return all it values', () => {
@@ -28,7 +29,6 @@ describe('Entity Media', () => {
       makeMedia();
     }).toThrowError();
   });
-  
   it('should remove special character from movie name', () => {
     const dataMedia = {
       name: 'Conan.Barberian-MTV(1965)',
