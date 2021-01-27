@@ -3,7 +3,11 @@ const { VALID_FORMATS } = require('../AppServerContant')
 
 function readFolder(videosLocation) {
     const FIRST_INDEX = 0;
-    const items = fs.readdirSync(`${videosLocation}`);
+    const dirents = fs.readdirSync(videosLocation, { withFileTypes: true });
+    const items = dirents
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+    //const items = fs.readdirSync(`${videosLocation}`);
     return items.filter(name => name.indexOf('.') !== FIRST_INDEX)
 }
 
