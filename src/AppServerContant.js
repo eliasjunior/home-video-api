@@ -1,6 +1,8 @@
 module.exports = {
-    USER_LOCATION: '/Users/eliasmj',
-    MOVIES_LOCATION: '/Documents/Vuze Downloads',
+   // USER_LOCATION: '/Users/eliasmj',
+     USER_LOCATION: '/pi',
+   // MOVIES_LOCATION: '/Documents/Vuze Downloads',
+    MOVIES_LOCATION: '/media/pi/External HD/Movies'
     COURSE_LOCATION: '/Documents/egghead',
     VALID_FORMATS: new Map([
         ['mp4', 'mp4'], 
