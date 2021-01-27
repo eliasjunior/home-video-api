@@ -1,6 +1,6 @@
 module.exports = {
    // USER_LOCATION: '/Users/eliasmj',
-     USER_LOCATION: '/home/pi',
+     USER_LOCATION: '',
    // MOVIES_LOCATION: '/Documents/Vuze Downloads',
     MOVIES_LOCATION: '/media/pi/External HD/Movies',
     COURSE_LOCATION: '/Documents/egghead',
