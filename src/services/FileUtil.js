@@ -4,11 +4,27 @@ const { VALID_FORMATS } = require('../AppServerContant')
 function readFolder(videosLocation) {
     const FIRST_INDEX = 0;
     const dirents = fs.readdirSync(videosLocation, { withFileTypes: true });
-    const items = dirents
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => dirent.name);
-    //const items = fs.readdirSync(`${videosLocation}`);
-    return items.filter(name => name.indexOf('.') !== FIRST_INDEX)
+    
+    fs.readdir(videosLocation, function (err, files) {
+    //handling error
+        if (err) {
+            return console.log('Unable to scan directory: ' + err);
+        } 
+        //listing all files using forEach
+        files.forEach(function (file) {
+            // Do whatever you want to do with the file
+            
+            fs.access(file, fs.constants.R_OK, err => {
+                console.log(`${file} ${err ? "is not readable" : "is readable"}`);
+            });
+        });
+    });
+    
+//     const items = dirents
+//         .filter(dirent => dirent.isDirectory())
+//         .map(dirent => dirent.name);
+//     //const items = fs.readdirSync(`${videosLocation}`);
+//     return items.filter(name => name.indexOf('.') !== FIRST_INDEX)
 }
 
 function getFileDirInfo(fullPath) {
