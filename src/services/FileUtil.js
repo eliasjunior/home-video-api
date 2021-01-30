@@ -15,7 +15,7 @@ function readFolder(videosLocation) {
             // Do whatever you want to do with the file
             
             fs.access(file, fs.constants.R_OK, err => {
-                console.log(`${file} ${err ? "is not readable" : "is readable"}`);
+                console.log(`${err ? "is not readable" : "******** is readable"} ${file} `);
             });
         });
     });
