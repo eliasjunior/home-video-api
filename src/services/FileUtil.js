@@ -20,11 +20,11 @@ function readFolder(videosLocation) {
         });
     });
     
-//     const items = dirents
-//         .filter(dirent => dirent.isDirectory())
-//         .map(dirent => dirent.name);
-//     //const items = fs.readdirSync(`${videosLocation}`);
-//     return items.filter(name => name.indexOf('.') !== FIRST_INDEX)
+     const items = dirents
+         .filter(dirent => dirent.isDirectory())
+         .map(dirent => dirent.name);
+     //const items = fs.readdirSync(`${videosLocation}`);
+     return items.filter(name => name.indexOf('.') !== FIRST_INDEX)
 }
 
 function getFileDirInfo(fullPath) {
