@@ -1,5 +1,5 @@
 const fs = require('fs');
-const Util = require('../services/FileUtil');
+const Util = require('../repository/index');
 
 const { getStartEndBytes,
     streamListener,
@@ -51,13 +51,13 @@ function readOrStream({ request, response, fullPath, baseLocation }) {
                 .end();
         }
     } else {
-        const options = {
-            response,
-            baseLocation,
-            videosLocation: `/${fileName}`
-        };
-        const videos = Util.getFiles(options)
-        flush(response, videos);
+        // const options = {
+        //     response,
+        //     baseLocation,
+        //     videosLocation: `/${fileName}`
+        // };
+        // const videos = Util.getFiles(options)
+        // flush(response, videos);
     }
 }
 module.exports = {

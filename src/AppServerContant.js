@@ -1,9 +1,8 @@
 module.exports = {
-   // USER_LOCATION: '/Users/eliasmj',
-     USER_LOCATION: '',
-   // MOVIES_LOCATION: '/Documents/Vuze Downloads',
-    MOVIES_LOCATION: '/home/pi/Videos',
+    USER_LOCATION: require('os').homedir(),
+    MOVIES_LOCATION: '/Downloads',
     COURSE_LOCATION: '/Documents/egghead',
+    VIDEO_FORMATS: ['.mp4', '.m4v', '.mkv', '.srt'],
     VALID_FORMATS: new Map([
         ['mp4', 'mp4'], 
         ['m4v', 'm4v'],
