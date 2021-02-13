@@ -1,9 +1,12 @@
 const router = require('express').Router();
 const VideoStreamingService = require('../services/VideoStreamingService');
 const AppServerConstant = require('../AppServerContant');
-const Util = require('../repository/index');
+import Util from '../repository';
 
-router.get('/movies', (req, response) => {
+function redirectMovies(req, res) {
+    res.redirect("/movies")
+}
+function loadMovies(req, response){
     const baseLocation = AppServerConstant.USER_LOCATION +
         AppServerConstant.MOVIES_LOCATION;
     const options = {
@@ -12,8 +15,8 @@ router.get('/movies', (req, response) => {
     };
     const videos = Util.getFiles(options);
     flush(response, videos);
-})
-router.get('/movies/:baseLocation', (req, response) => {
+}
+function showVideoDetails (req, response) {
     const { baseLocation } = req.params;
     const temp = "/" + baseLocation.replace(/\./g, '/')
     const options = {
@@ -22,8 +25,8 @@ router.get('/movies/:baseLocation', (req, response) => {
     };
     const videos = Util.getFiles(options);
     flush(response, videos);
-})
-router.get('/courses', (req, response) => {
+}
+function getCourses(req, response) {
     const baseLocation = AppServerConstant.USER_LOCATION +
         AppServerConstant.COURSE_LOCATION;
     const options = {
@@ -33,8 +36,8 @@ router.get('/courses', (req, response) => {
     };
     const videos = Util.getFiles(options)
     flush(response, videos);
-})
-router.get('/videos/:folder/:fileName', (request, response) => {
+}
+function StreamingVideo(request, response) {
     let baseLocation = AppServerConstant.USER_LOCATION
     const {folder, fileName} = request.params;
 
@@ -57,14 +60,20 @@ router.get('/videos/:folder/:fileName', (request, response) => {
         baseLocation
     }
     VideoStreamingService.readOrStream(options);
-});
-router.get('/captions/:folder/:fileName', (request, response) => {
+}
+function getCaption(request, response){
     let baseLocation = AppServerConstant.USER_LOCATION
     const {folder, fileName} = request.params;
     baseLocation = baseLocation.concat(AppServerConstant.MOVIES_LOCATION);
-
     response.sendFile(baseLocation + '/' + folder + '/' + fileName)
-})
+}
+
+router.get("/", redirectMovies)
+router.get('/movies', loadMovies)
+router.get('/movies/:baseLocation', showVideoDetails)
+router.get('/courses', getCourses)
+router.get('/videos/:folder/:fileName', StreamingVideo)
+router.get('/captions/:folder/:fileName', getCaption)
 
 function flush(response, videos) {
     response

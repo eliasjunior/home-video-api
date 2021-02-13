@@ -1,8 +1,9 @@
-const Util = require('./FileUtil')();
+import Util from "./FileUtil"
 
 const fs = require('fs');
 const path = require('path');
 const EMPTY_INFO = "";
+
 const ApiResource = {
     readFileInfo: function(fullPath) {
         //get file info, size
@@ -35,7 +36,5 @@ const ApiResource = {
         return path.extname(fileName).toLowerCase();
     }
 }
-module.exports = {
-    getFiles,
-    getFileDirInfo
-} = Util({ApiResource});
+
+export default Util({ApiResource});

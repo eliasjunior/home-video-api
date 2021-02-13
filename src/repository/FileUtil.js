@@ -1,47 +1,44 @@
-const { VIDEO_FORMATS } = require('../AppServerContant')
+import { VIDEO_FORMATS } from '../AppServerContant'
 
+function UtilFactory({ApiResource}) {
+    const {
+        readFileOnDisc,
+        isDirExist,
+        fileExtEqual
+    } = ApiResource;
+    return {
+        getFileDirInfo: function (fullPath) {
+            return ApiResource.readFileInfo(fullPath);
+        },
+        getFiles: function ({baseLocation}) {
+            //It just goes 1 level in the folder
+            if (isDirExist(baseLocation)) {
+                console.info(`getFiles under ${baseLocation}`)
+                verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual})
 
-function UtilFactory() {
-    return ({ApiResource}) => {
-        const {
-            readFileOnDisc,
-            isDirExist,
-            fileExtEqual
-        } = ApiResource;
-      return {
-          getFileDirInfo: function(fullPath) {
-              return ApiResource.readFileInfo(fullPath);
-          },
-          getFiles: function({ baseLocation }) {
-              //It just goes 1 level in the folder
-              if(isDirExist(baseLocation)) {
-                  console.info(`getFiles under ${baseLocation}`)
-                  verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual})
+                const folders = getFolderName(baseLocation, {readFileOnDisc});
+                console.info(`Folders found [${folders}]`)
 
-                  const folders = getFolderName(baseLocation, {readFileOnDisc});
-                  console.info(`Folders found [${folders}]`)
+                const getOnlyValidFile = (folderName) => {
+                    const fileList = getFilesFolder(`${baseLocation}/${folderName}`, readFileOnDisc)
+                    return filterValidFiles(fileList, fileExtEqual);
+                }
 
-                  const getOnlyValidFile = (folderName) => {
-                      const fileList = getFilesFolder(`${baseLocation}/${folderName}`, readFileOnDisc)
-                      return filterValidFiles(fileList, fileExtEqual);
-                  }
+                return folders
+                    .filter(folderName => getOnlyValidFile(folderName).length > 0)
+                    .reduce((prev, folderName) => {
+                        prev[folderName] = getOnlyValidFile(folderName)
+                        return prev;
+                    }, {});
 
-                  return folders
-                      .filter(folderName => getOnlyValidFile(folderName).length > 0)
-                      .reduce( (prev, folderName) => {
-                          prev[folderName] = getOnlyValidFile(folderName)
-                          return prev;
-                      }, {});
-
-              } else {
-                  console.info(`Dir ${baseLocation} does not exist`);
-              }
-          }
-      }
+            } else {
+                console.info(`Dir ${baseLocation} does not exist`);
+            }
+        }
     }
 }
 
-module.exports = UtilFactory
+export default UtilFactory
 
 // ###### Private functions
 
