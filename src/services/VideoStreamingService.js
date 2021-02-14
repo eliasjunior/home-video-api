@@ -1,5 +1,5 @@
-const fs = require('fs');
-const Util = require('../repository/index');
+import fs from 'fs';
+import Util from '../repository';
 
 const { getStartEndBytes,
     streamListener,

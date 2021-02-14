@@ -1,4 +1,10 @@
-import { VIDEO_FORMATS } from '../AppServerContant'
+import {
+    verifyingOrphanFiles,
+    getFilesFolder,
+    filterValidFiles,
+    getFolderName
+} from "./FileHelper";
+import {mapMedia} from "./MediaMapper";
 
 function UtilFactory({ApiResource}) {
     const {
@@ -15,22 +21,22 @@ function UtilFactory({ApiResource}) {
             if (isDirExist(baseLocation)) {
                 console.info(`getFiles under ${baseLocation}`)
                 verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual})
-
-                const folders = getFolderName(baseLocation, {readFileOnDisc});
-                console.info(`Folders found [${folders}]`)
+                // get all folders including the ones that does not have video
+                const allFolders = getFolderName(baseLocation, {readFileOnDisc});
 
                 const getOnlyValidFile = (folderName) => {
                     const fileList = getFilesFolder(`${baseLocation}/${folderName}`, readFileOnDisc)
                     return filterValidFiles(fileList, fileExtEqual);
                 }
-
-                return folders
+                return allFolders
                     .filter(folderName => getOnlyValidFile(folderName).length > 0)
                     .reduce((prev, folderName) => {
-                        prev[folderName] = getOnlyValidFile(folderName)
+                        const files = getOnlyValidFile(folderName);
+                        const media = mapMedia(files, folderName, fileExtEqual);
+                        prev.byId[folderName] = media
+                        prev.allIds.push(media.id)
                         return prev;
-                    }, {});
-
+                    }, {byId : {}, allIds: []});
             } else {
                 console.info(`Dir ${baseLocation} does not exist`);
             }
@@ -39,53 +45,3 @@ function UtilFactory({ApiResource}) {
 }
 
 export default UtilFactory
-
-// ###### Private functions
-
-function filterValidFiles (fileList, fileExtEqual){
-    const isValidExtension = (fileName, fileExtEqual) => {
-        return VIDEO_FORMATS.filter(ext =>  ext === fileExtEqual(fileName)).length > 0
-    }
-    return fileList.filter(fileName => isValidExtension(fileName, fileExtEqual))
-}
-
-function getFolderName(baseLocation, {readFileOnDisc}) {
-
-        const fileOrFolder = readFileOnDisc(baseLocation);
-        return fileOrFolder
-            .filter(file => file.isDirectory())
-            .map(file => file.name);
-}
-
-function verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual}) {
-    const justFiles = readFileOnDisc(baseLocation)
-        .filter(file => !file.isDirectory())
-        .map(file => file.name)
-
-    if(justFiles.length > 0) {
-        filterValidFiles(justFiles, fileExtEqual).forEach(name => {
-            console.warn(`*** ${name} does not has a parent folder`);
-        });
-    } else {
-        console.info(`No files with ext[${permittedExtStr()}] without a parent in ${baseLocation}`)
-    }
-}
-
-function permittedExtStr() {
-    return VIDEO_FORMATS.reduce((prev, cur)=> {
-        prev = prev.concat(cur) + ", "
-        return prev;
-    } , "");
-}
-
-function getFilesFolder(folderName, readFileOnDisc) {
-    try {
-        const fileOrFolder = readFileOnDisc(folderName);
-        return fileOrFolder
-            .map(file => file.name);
-
-    } catch (err) {
-        console.error('Unable to scan directory: ' + err);
-        return [];
-    }
-}
