@@ -1,21 +1,22 @@
-import {VIDEO_FORMATS, SUB_FORMATS} from "../AppServerContant";
+import {VIDEO_FORMATS, SUB_FORMATS, IMG_FORMATS} from "../AppServerContant";
 
 export function filterValidFiles (fileList, fileExtEqual){
     const isValidExtension = (fileName, fileExtEqual) => {
         return VIDEO_FORMATS.filter(ext =>  ext === fileExtEqual(fileName)).length > 0 ||
-        SUB_FORMATS.filter(ext =>  ext === fileExtEqual(fileName)).length > 0
+        SUB_FORMATS.filter(ext =>  ext === fileExtEqual(fileName)).length > 0 ||
+        IMG_FORMATS.filter(ext =>  ext === fileExtEqual(fileName)).length > 0
     }
     return fileList.filter(fileName => isValidExtension(fileName, fileExtEqual))
 }
-export function getFolderName(baseLocation, {readFileOnDisc}) {
+export function getFolderName(baseLocation, {readDirectory}) {
 
-    const fileOrFolder = readFileOnDisc(baseLocation);
+    const fileOrFolder = readDirectory(baseLocation);
     return fileOrFolder
         .filter(file => file.isDirectory())
         .map(file => file.name);
 }
-export function verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual}) {
-    const justFiles = readFileOnDisc(baseLocation)
+export function verifyingOrphanFiles(baseLocation, {readDirectory, fileExtEqual}) {
+    const justFiles = readDirectory(baseLocation)
         .filter(file => !file.isDirectory())
         .map(file => file.name)
 
@@ -28,9 +29,9 @@ export function verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual
             sub ext[${permittedSubExtStr()}] without a parent in ${baseLocation}`)
     }
 }
-export function getFilesFolder(folderName, readFileOnDisc) {
+export function getFilesFolder(folderName, readDirectory) {
     try {
-        const fileOrFolder = readFileOnDisc(folderName);
+        const fileOrFolder = readDirectory(folderName);
         return fileOrFolder
             .map(file => file.name);
 

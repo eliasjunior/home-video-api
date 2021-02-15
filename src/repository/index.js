@@ -14,7 +14,7 @@ const ApiResource = {
         }
         return EMPTY_INFO
     },
-    readFileOnDisc: function(folderLocation) {
+    readDirectory: function(folderLocation) {
         try {
             return fs.readdirSync(folderLocation, { withFileTypes: true });
         } catch (err) {
@@ -22,6 +22,14 @@ const ApiResource = {
         }
         console.warn(`No directories found into ${folderLocation}`)
         return [];
+    },
+    readFile: function(fileUrl) {
+        try {
+            return  fs.readFileSync(fileUrl);
+        } catch (err) {
+            console.error(`Unable to read file${fileUrl}: `);
+            throw err;
+        }
     },
     isDirExist: function (folderPath) {
         try {

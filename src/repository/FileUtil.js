@@ -8,24 +8,28 @@ import {mapMedia} from "./MediaMapper";
 
 function UtilFactory({ApiResource}) {
     const {
-        readFileOnDisc,
+        readDirectory,
         isDirExist,
-        fileExtEqual
+        fileExtEqual,
+        readFile,
     } = ApiResource;
     return {
         getFileDirInfo: function (fullPath) {
             return ApiResource.readFileInfo(fullPath);
         },
+        readFile(absolutPath) {
+            return readFile(absolutPath)
+        },
         getFiles: function ({baseLocation}) {
             //It just goes 1 level in the folder
             if (isDirExist(baseLocation)) {
                 console.info(`getFiles under ${baseLocation}`)
-                verifyingOrphanFiles(baseLocation, {readFileOnDisc, fileExtEqual})
+                verifyingOrphanFiles(baseLocation, {readDirectory, fileExtEqual})
                 // get all folders including the ones that does not have video
-                const allFolders = getFolderName(baseLocation, {readFileOnDisc});
+                const allFolders = getFolderName(baseLocation, {readDirectory});
 
                 const getOnlyValidFile = (folderName) => {
-                    const fileList = getFilesFolder(`${baseLocation}/${folderName}`, readFileOnDisc)
+                    const fileList = getFilesFolder(`${baseLocation}/${folderName}`, readDirectory)
                     return filterValidFiles(fileList, fileExtEqual);
                 }
                 return allFolders

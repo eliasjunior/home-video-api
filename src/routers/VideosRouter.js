@@ -2,16 +2,19 @@ const router = require('express').Router();
 const VideoStreamingService = require('../services/VideoStreamingService');
 const AppServerConstant = require('../AppServerContant');
 import Util from '../repository';
+import path from 'path';
 
 let MovieMap = {byId : {}, allIds: []};
+let baseLocationMovie = AppServerConstant.USER_LOCATION +
+    AppServerConstant.MOVIES_LOCATION;
+let baseLocationCourses = AppServerConstant.USER_LOCATION +
+    AppServerConstant.COURSE_LOCATION;
 
 function redirectMovies(req, res) {
     res.redirect("/movies")
 }
 function loadMovies(req, response){
-    const baseLocation = AppServerConstant.USER_LOCATION +
-        AppServerConstant.MOVIES_LOCATION;
-    const videos = Util.getFiles({baseLocation});
+    const videos = Util.getFiles({baseLocation: baseLocationMovie});
 
     MovieMap = videos.allIds.reduce((prev, id) => {
         prev.byId[id] = videos.byId[id]
@@ -36,6 +39,7 @@ function loadMovie(req, response) {
 function passingBaseLocation (req, response) {
     const { baseLocation } = req.params;
     const temp = "/" + baseLocation.replace(/\./g, '/')
+    baseLocationMovie = temp
     const options = {
         response,
         baseLocation: temp,
@@ -44,45 +48,39 @@ function passingBaseLocation (req, response) {
     flush(response, videos);
 }
 function getCourses(req, response) {
-    const baseLocation = AppServerConstant.USER_LOCATION +
-        AppServerConstant.COURSE_LOCATION;
     const options = {
         response,
-        baseLocation,
+        baseLocation: baseLocationCourses,
         videosLocation: ''
     };
     const videos = Util.getFiles(options)
     flush(response, videos);
 }
 function StreamingVideo(request, response) {
-    let baseLocation = AppServerConstant.USER_LOCATION
     const {folder, fileName} = request.params;
 
-    //workaround for now
-    const separateIndex = folder.indexOf('_');
-    const tempFolder = folder.slice(separateIndex + 1);
-    const backWordsIndex = separateIndex - 6;
-    const baseFolder = folder.slice(backWordsIndex, separateIndex)
-
-    if (baseFolder === 'movies') {
-        baseLocation = baseLocation.concat(AppServerConstant.MOVIES_LOCATION);
-    } else {
-        baseLocation = baseLocation.concat(AppServerConstant.COURSE_LOCATION);
-    }
-    const fullPath = `${baseLocation}/${tempFolder}/${fileName}`;
+    const fullPath = `${baseLocationMovie}/${folder}/${fileName}`;
     const options = {
         request,
         response,
         fullPath,
-        baseLocation
+        baseLocation: baseLocationMovie
     }
     VideoStreamingService.readOrStream(options);
 }
 function getCaption(request, response){
-    let baseLocation = AppServerConstant.USER_LOCATION
     const {folder, fileName} = request.params;
-    baseLocation = baseLocation.concat(AppServerConstant.MOVIES_LOCATION);
-    response.sendFile(baseLocation + '/' + folder + '/' + fileName)
+    const fileBuffer = Util.readFile(baseLocationMovie + '/' + folder + '/' + fileName)
+   // console.log("===================== SendFile", path.join(__dirname + fileBuffer))
+    //response.set({"Content-Disposition":"attachment; filename=\"req.params.name\""});
+    // response.attachment(fileName)
+    // response.type('vtt')
+   // response.sendFile(path.join(__dirname + fileBuffer))
+   // response.send(fileBuffer)
+    const fs = require('fs')
+    response.setHeader("content-type", "vtt");
+    fs.createReadStream(baseLocationMovie + '/' + folder + '/' + fileName).pipe(response);
+
 }
 
 router.get("/", redirectMovies)
