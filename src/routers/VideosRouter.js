@@ -40,11 +40,7 @@ function passingBaseLocation (req, response) {
     const { baseLocation } = req.params;
     const temp = "/" + baseLocation.replace(/\./g, '/')
     baseLocationMovie = temp
-    const options = {
-        response,
-        baseLocation: temp,
-    };
-    const videos = Util.getFiles(options);
+    const videos = Util.getFiles({baseLocation: temp});
     flush(response, videos);
 }
 function getCourses(req, response) {
@@ -70,17 +66,9 @@ function StreamingVideo(request, response) {
 }
 function getCaption(request, response){
     const {folder, fileName} = request.params;
-    const fileBuffer = Util.readFile(baseLocationMovie + '/' + folder + '/' + fileName)
-   // console.log("===================== SendFile", path.join(__dirname + fileBuffer))
-    //response.set({"Content-Disposition":"attachment; filename=\"req.params.name\""});
-    // response.attachment(fileName)
-    // response.type('vtt')
-   // response.sendFile(path.join(__dirname + fileBuffer))
-   // response.send(fileBuffer)
     const fs = require('fs')
     response.setHeader("content-type", "vtt");
     fs.createReadStream(baseLocationMovie + '/' + folder + '/' + fileName).pipe(response);
-
 }
 
 router.get("/", redirectMovies)
