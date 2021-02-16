@@ -4,6 +4,7 @@ import path from 'path';
 describe("MediaMapper", ()=> {
     it("should map a media", () => {
         const fileList = ["myMovie.mp4", "myMovie.srt"]
+
         const fileExtEqual = (fileName) => {
             return path.extname(fileName).toLowerCase();
         }
