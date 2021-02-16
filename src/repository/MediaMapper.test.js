@@ -13,7 +13,7 @@ describe("MediaMapper", ()=> {
             sub: "myMovie.srt",
             description: "",
             id: "some",
-            img: ""
+            img: "movie_fallback.jpg"
         }
         expect(objMedia).toEqual(expected);
     })
