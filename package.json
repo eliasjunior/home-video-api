@@ -22,7 +22,8 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "fsevents": "^2.3.2",
-    "handbrake-js": "^3.0.8"
+    "handbrake-js": "^3.0.8",
+    "subsrt": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",

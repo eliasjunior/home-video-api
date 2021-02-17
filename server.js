@@ -1,14 +1,15 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const VideosRouter = require('./src/routers/VideosRouter');
+const bodyParser = require("body-parser");
 const cors = require('cors');
+import VideosRouter from "./src/routers/VideosRouter";
+import path from "path";
 
 let app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname))
+app.use("/static", express.static(path.join(__dirname, "public")));
 
 const port = process.env.PORT || 8080;
 

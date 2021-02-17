@@ -10,12 +10,12 @@ describe("MediaMapper", ()=> {
         }
         const objMedia = mapMedia(fileList, "some", fileExtEqual)
         const expected = {
-            name: "myMovie.mp4",
-            sub: "myMovie.srt",
-            description: "",
-            id: "some",
-            img: "movie_fallback.jpg"
-        }
+          name: "myMovie.mp4",
+          sub: "myMovie.srt",
+          description: "",
+          id: "some",
+          img: "movie_fallback.png",
+        };
         expect(objMedia).toEqual(expected);
     })
 })
