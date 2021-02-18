@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "start": "babel-node init.js",
-    "dev": "nodemon --exec babel-node init.js",
+    "start": "NODE_ENV=production babel-node init.js",
+    "dev": "NODE_ENV=develpment nodemon --exec babel-node init.js",
     "express": "^4.16.4"
   },
   "repository": {
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/eliasjunior/home-video-server#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.16.4",
     "fsevents": "^2.3.2",
     "handbrake-js": "^3.0.8",

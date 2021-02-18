@@ -51,7 +51,7 @@ function UtilFactory({ApiResource}) {
           console.info(`Dir ${baseLocation} does not exist`);
         }
       },
-      GetFileExt(fileName) {
+      getFileExt(fileName) {
         return fileExtEqual(fileName);
       },
     };
