@@ -23,7 +23,7 @@ function UtilFactory({ApiResource}) {
       getFiles: function ({ baseLocation }) {
         //It just goes 1 level in the folder
         if (isDirExist(baseLocation)) {
-          console.info(`getFiles under ${baseLocation}`);
+          console.info(`getFiles under *** ${baseLocation} ***`);
           verifyingOrphanFiles(baseLocation, { readDirectory, fileExtEqual });
           // get all folders including the ones that does not have video
           const allFolders = getFolderName(baseLocation, { readDirectory });
