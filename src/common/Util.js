@@ -18,7 +18,7 @@ export function getUserVar() {
   if (NODE_ENV !== "production") {
     return {
       imgBaseLocation: "/Downloads/Images",
-      moviesLocation: "/Downloads",
+      moviesLocation: "/Downloads/Movies",
     };
   } else {
     return {
