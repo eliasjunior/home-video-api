@@ -1,18 +1,14 @@
 const router = require("express").Router();
 const VideoStreamingService = require("../services/VideoStreamingService");
-const AppServerConstant = require("../AppServerContant");
 import { getUserVar } from "../common/Util";
 import UtilFile from "../repository";
 const { getFiles, readFile, getFileExt } = UtilFile;
-const { imgBaseLocation, moviesLocation } = getUserVar();
-
+const { imgBaseLocation, moviesLocation, baseLocation } = getUserVar();
 
 let MovieMap = { byId: {}, allIds: [] };
-let baseLocationMovie = AppServerConstant.USER_LOCATION + moviesLocation;
-let baseLocationCourses =
-  AppServerConstant.USER_LOCATION + AppServerConstant.COURSE_LOCATION;
-
-let baseLocationImgs = AppServerConstant.USER_LOCATION + imgBaseLocation;
+let baseLocationMovie = baseLocation + moviesLocation;
+let baseLocationCourses = "not ready";
+let baseLocationImgs = baseLocation + imgBaseLocation;
 
 function redirectMovies(_, res) {
   res.redirect("/movies");

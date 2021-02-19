@@ -1,5 +1,6 @@
 import Util from "./FileUtil";
 import { DEFAULT_ENCONDING } from "../AppServerContant"
+import { logE } from "../common/ErrorUtil";
 
 const fs = require("fs");
 const path = require("path");
@@ -41,7 +42,7 @@ const ApiResource = {
       fs.accessSync(folderPath, fs.constants.R_OK | fs.constants.F_OK);
       return true;
     } catch (err) {
-      console.error(`${folderPath} does not exist`, err);
+      logE(`${folderPath} does not exist`, err);
       return false;
     }
   },
