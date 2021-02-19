@@ -24,7 +24,7 @@ export function getUserVar() {
     };
   } else {
     return {
-      imgBaseLocation: "/Images",
+      imgBaseLocation: `${USER_LOCATION}/Images`,
       moviesLocation: "/media/pi/ExternalHD/Movies",
       baseLocation: "",
     };
