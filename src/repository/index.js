@@ -1,6 +1,7 @@
 import Util from "./FileUtil";
-import { DEFAULT_ENCONDING } from "../AppServerContant"
+import { DEFAULT_ENCONDING, IMG_FALLBACK } from "../AppServerContant";
 import { logE } from "../common/ErrorUtil";
+const { PWD } = process.env;
 
 const fs = require("fs");
 const path = require("path");
@@ -27,15 +28,20 @@ const ApiResource = {
   },
   readFile: function (fileUrl, encoding = DEFAULT_ENCONDING) {
     try {
-      if      (encoding === "none") {
+      if (encoding === "none") {
         return fs.readFileSync(fileUrl);
       } else {
         return fs.readFileSync(fileUrl, encoding);
       }
     } catch (err) {
       console.error(`Unable to read file${fileUrl}: `);
-      throw err;
-    }
+      try {
+        return fs.readFileSync(`${PWD}/public/${IMG_FALLBACK}`);
+      } catch (err) {
+        logE("failed getting fallback image", err);
+        return null;
+      }
+    } 
   },
   isDirExist: function (folderPath) {
     try {
