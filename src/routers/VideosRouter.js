@@ -1,17 +1,16 @@
-const router = require("express").Router();
-const VideoStreamingService = require("../services/VideoStreamingService");
+import express from "express";
+import VideoStreamingService from "../services/VideoStreamingService";
 import { getUserVar } from "../common/Util";
-import UtilFile from "../repository";
-const { getFiles, readFile, getFileExt } = UtilFile;
-const { imgBaseLocation, moviesLocation, baseLocation } = getUserVar();
+import UtilFile from "../accessData";
+const { getFiles } = UtilFile;
+const { moviesLocation, baseLocation } = getUserVar();
+const router = express.Router();
 
 let MovieMap = { byId: {}, allIds: [] };
 let baseLocationMovie = baseLocation + moviesLocation;
-let baseLocationCourses = "not ready";
-let baseLocationImgs = baseLocation + imgBaseLocation;
 
 function redirectMovies(_, res) {
-  res.redirect("/movies");
+  res.redirect("/videos");
 }
 function loadMovies(_, response) {
   const videos = getFiles({ baseLocation: baseLocationMovie });
@@ -45,70 +44,21 @@ function passingBaseLocation(req, response) {
   const videos = getFiles({ baseLocation: temp });
   flushJSON(response, videos);
 }
-function getCourses(_, response) {
-  const options = {
-    response,
-    baseLocation: baseLocationCourses,
-    videosLocation: "",
-  };
-  const videos = getFiles(options);
-  flushJSON(response, videos);
-}
 function StreamingVideo(request, response) {
-  const { folder, fileName } = request.params;
+  const { folder, fileName, range } = request.params;
 
-  const fullPath = `${baseLocationMovie}/${folder}/${fileName}`;
-  const options = {
-    request,
-    response,
-    fullPath,
-    baseLocation: baseLocationMovie,
-  };
-  VideoStreamingService.readOrStream(options);
-}
-function getCaption(request, response) {
-  const { folder, fileName } = request.params;
-  const fs = require("fs");
-  const fileAbsolutePath = baseLocationMovie + "/" + folder + "/" + fileName;
-
-  const ext = getFileExt(fileName);
-
-  if (ext === ".vtt") {
-    response.setHeader("content-type", "vtt");
-    fs.createReadStream(fileAbsolutePath).pipe(response);
-  } else {
-    // TODO have to stream because its crashing
-    // const subsrt = require('subsrt');
-    // let srtContent = readFile(fileAbsolutePath, '');
-    // const srt = subsrt.convert(srtContent, { format: "vtt", fps: 25 });
-    // fs.createReadStream(srt).pipe(response);
-  }
-}
-function getImgFromMovie(req, response) {
-  const { folder, fileName } = req.params;
-  const MINUS_EXT_INDEX = 4;
-  const imgFileName = fileName
-    .slice(0, fileName.length - MINUS_EXT_INDEX)
-    .concat(".jpg");
-
-  const fileAbsolutePath = `${baseLocationImgs}/${folder}/${imgFileName}`;
-  //console.log("getting img at", fileAbsolutePath);
-  let img = readFile(fileAbsolutePath, "none");
-  response.write(img, "binary");
-  response.end(null, "binary");
+  const fileAbsPath = `${baseLocationMovie}/${folder}/${fileName}`;
+  VideoStreamingService.readOrStream({ range, response, fileAbsPath });
 }
 
 router.get("/", redirectMovies);
-router.get("/movies", loadMovies);
-router.get("/movies/:id", loadMovie);
-router.get("/movies/nobase/:baseLocation", passingBaseLocation);
-router.get("/courses", getCourses);
+router.get("/videos", loadMovies);
+router.get("/videos/:id", loadMovie);
+router.get("/videos/nobase/:baseLocation", passingBaseLocation);
 router.get("/videos/:folder/:fileName", StreamingVideo);
-router.get("/captions/:folder/:fileName", getCaption);
-router.get("/images/:folder/:fileName", getImgFromMovie);
 
 function flushJSON(response, videos) {
   response.status(200).json(videos).end();
 }
 
-module.exports = router;
+export default router;

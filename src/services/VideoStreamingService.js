@@ -1,66 +1,44 @@
-import fs from 'fs';
-import Util from '../repository';
 
-const { getStartEndBytes,
-    streamListener,
-    getHeadStream } = require('./StreamingUtil')
+import { logE } from "../common/MessageUtil";
+import Util from "../accessData";
+import {
+  getStartEndBytes,
+  streamListener,
+  getHeadStream,
+} from "./StreamingUtil";
+import { SUCCESS_STATUS, PARTIAL_CONTENT_STATUS } from "../AppServerContant";
+import StreamingData from "../streamingData";
+const { streamData } = StreamingData;
 
-const { VALID_FORMATS }  =  require('../AppServerContant')
+export function readOrStream({ range, response, fileAbsPath }) {
+  try {
+    let statInfo = Util.getFileDirInfo(fileAbsPath);
+    const { size } = statInfo;
 
-function sendStream({ response, range, size, fullPath }) {
     if (range) {
-        const { start, end } = getStartEndBytes(range, size)
+      const { start, end } = getStartEndBytes(range, size);
 
-        const videoStream = fs
-            .createReadStream(fullPath, { start, end });
-        console.log(`*${fullPath}`);
-        
-        streamListener(videoStream, response);
+      const videoStream = streamData({ fileAbsPath, start, end });
 
-        response.writeHead('206', getHeadStream(start, end, size))
+      streamListener(videoStream, response);
+
+      response.writeHead(
+        PARTIAL_CONTENT_STATUS,
+        getHeadStream(start, end, size)
+      );
     } else {
-        fs
-            .createReadStream(fullPath)
-            .pipe(response);
-        response.writeHead(200, getHeadStream(null, null, size))
+      createStreamNoRange(fileAbsPath);
+      response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));
     }
-}
-function readOrStream({ request, response, fullPath, baseLocation }) {
-    const { fileName } = request.params;
-    const { range } = request.headers;
-
-    if (VALID_FORMATS.get(fileName.slice(-3))) {
-        try {
-            let statInfo = Util.getFileDirInfo(fullPath);
-            const { size } = statInfo;
-
-            const options = {
-                response,
-                range,
-                size,
-                fullPath
-            }
-            sendStream(options);
-        } catch (error) {
-            console.log(error)
-            response
-                .status(500)
-                .send({ 
-                    message: 'Something went wrong, file not found, maybe folder has a different name' ,
-                    error: error.message})
-                .end();
-        }
-    } else {
-        // const options = {
-        //     response,
-        //     baseLocation,
-        //     videosLocation: `/${fileName}`
-        // };
-        // const videos = Util.getFiles(options)
-        // flush(response, videos);
-    }
-}
-module.exports = {
-    sendStream,
-    readOrStream
+  } catch (error) {
+    logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
+    response
+      .status(500)
+      .send({
+        message:
+          "Something went wrong, file not found, maybe folder has a different name",
+        error: error.message,
+      })
+      .end();
+  }
 }

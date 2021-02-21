@@ -7,11 +7,11 @@ import {
 } from "./FileHelper";
 import { mapMedia } from "./MediaMapper";
 
-function UtilFactory({ ApiResource }) {
-  const { readDirectory, isDirExist, fileExtEqual, readFile } = ApiResource;
+export default function FileUseCase({ FileApi }) {
+  const { readDirectory, isDirExist, fileExtEqual, readFile } = FileApi;
   return {
     getFileDirInfo: function (fullPath) {
-      return ApiResource.readFileInfo(fullPath);
+      return FileApi.readFileInfo(fullPath);
     },
     readFile(absolutPath, encondig = DEFAULT_ENCONDING) {
       return readFile(absolutPath, encondig);
@@ -38,8 +38,8 @@ function UtilFactory({ ApiResource }) {
               const files = getValidFileList(folderName).filter((fileName) =>
                 isThereVideoFile(fileName, fileExtEqual)
               );
-              if(files.length) {
-                const media = mapMedia(files, folderName, fileExtEqual );
+              if (files.length) {
+                const media = mapMedia(files, folderName, fileExtEqual);
                 prev.byId[folderName] = media;
                 prev.allIds.push(media.id);
               }
@@ -56,5 +56,3 @@ function UtilFactory({ ApiResource }) {
     },
   };
 }
-
-export default UtilFactory;
