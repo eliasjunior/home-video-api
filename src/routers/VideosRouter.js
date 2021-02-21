@@ -11,7 +11,7 @@ let baseLocationCourses = "not ready";
 let baseLocationImgs = baseLocation + imgBaseLocation;
 
 function redirectMovies(_, res) {
-  res.redirect("/movies");
+  res.redirect("/videos");
 }
 function loadMovies(_, response) {
   const videos = getFiles({ baseLocation: baseLocationMovie });
@@ -99,9 +99,9 @@ function getImgFromMovie(req, response) {
 }
 
 router.get("/", redirectMovies);
-router.get("/movies", loadMovies);
-router.get("/movies/:id", loadMovie);
-router.get("/movies/nobase/:baseLocation", passingBaseLocation);
+router.get("/videos", loadMovies);
+router.get("/videos/:id", loadMovie);
+router.get("/videos/nobase/:baseLocation", passingBaseLocation);
 router.get("/courses", getCourses);
 router.get("/videos/:folder/:fileName", StreamingVideo);
 router.get("/captions/:folder/:fileName", getCaption);
