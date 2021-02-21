@@ -1,4 +1,8 @@
-import { VIDEO_FORMATS, SUB_FORMATS, IMG_FORMATS } from "../AppServerContant";
+import {
+  VIDEO_FORMATS,
+  SUB_FORMATS,
+  IMG_FORMATS,
+} from "../common/AppServerContant";
 
 export function filterValidFiles(fileList, fileExtEqual) {
   const isValidExtension = (fileName) => {

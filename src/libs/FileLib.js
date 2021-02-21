@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { logE } from "../common/MessageUtil";
-import { DEFAULT_ENCONDING } from "../AppServerContant";
+import { DEFAULT_ENCONDING } from "../common/AppServerContant";
 
 const EMPTY_INFO = "";
 

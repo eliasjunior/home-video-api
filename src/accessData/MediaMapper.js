@@ -1,4 +1,9 @@
-import {VIDEO_FORMATS, SUB_FORMATS, IMG_FORMATS, IMG_FALLBACK} from "../AppServerContant";
+import {
+  VIDEO_FORMATS,
+  SUB_FORMATS,
+  IMG_FORMATS,
+  IMG_FALLBACK,
+} from "../common/AppServerContant";
 
 export function mapMedia(fileNameList, folderName, fileExtEqual) {
   const name = fileNameList

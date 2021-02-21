@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { SERVER_URL, SERVER_URL_PROD, SERVER_PORT, NODE_ENV } = process.env;
-import { USER_LOCATION } from "../AppServerContant";
+import { USER_LOCATION } from "./AppServerContant";
 
 export function getPort() {
   return SERVER_PORT;

@@ -1,7 +1,9 @@
 import express from "express";
-import VideoStreamingService from "../services/VideoStreamingService";
 import { getUserVar } from "../common/Util";
 import UtilFile from "../accessData";
+import StreamingData from "../streamingData";
+
+const { streamData } = StreamingData;
 const { getFiles } = UtilFile;
 const { moviesLocation, baseLocation } = getUserVar();
 const router = express.Router();
@@ -46,9 +48,32 @@ function passingBaseLocation(req, response) {
 }
 function StreamingVideo(request, response) {
   const { folder, fileName, range } = request.params;
-
   const fileAbsPath = `${baseLocationMovie}/${folder}/${fileName}`;
-  VideoStreamingService.readOrStream({ range, response, fileAbsPath });
+  
+  try {
+    if (range) {
+      const videoStream = streamData({ fileAbsPath, range });
+      streamListener(videoStream, response);
+
+      response.writeHead(
+        PARTIAL_CONTENT_STATUS,
+        getHeadStream(start, end, size)
+      );
+    } else {
+      createStreamNoRange(fileAbsPath);
+      response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));
+    }
+  } catch (error) {
+    logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
+    response
+      .status(500)
+      .send({
+        message:
+          "Something went wrong, file not found, maybe folder has a different name",
+        error: error.message,
+      })
+      .end();
+  }
 }
 
 router.get("/", redirectMovies);

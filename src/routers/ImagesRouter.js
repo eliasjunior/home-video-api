@@ -1,5 +1,5 @@
 import express from "express";
-import { IMG_FALLBACK } from "../AppServerContant";
+import { IMG_FALLBACK } from "../common/AppServerContant";
 import UtilFile from "../accessData";
 import { getUserVar } from "../common/Util";
 const { readFile } = UtilFile;
