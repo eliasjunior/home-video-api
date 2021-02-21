@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "NODE_ENV=production babel-node init.js",
-    "dev": "NODE_ENV=develpment nodemon --exec babel-node init.js",
+    "dev": "nodemon --exec babel-node init.js",
     "express": "^4.16.4"
   },
   "repository": {

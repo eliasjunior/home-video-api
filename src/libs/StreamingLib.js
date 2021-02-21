@@ -9,9 +9,9 @@ export default function StreamingUseCase() {
         throw error;
       }
     },
-    createStreamNoRange: function () {
+    createStreamNoRange: function (fileAbsPath, response) {
       try {
-        fs.createReadStream(fullPath).pipe(response);
+        fs.createReadStream(fileAbsPath).pipe(response);
       } catch (error) {
         return error;
       }

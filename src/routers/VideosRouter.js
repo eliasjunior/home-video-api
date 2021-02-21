@@ -1,10 +1,16 @@
 import express from "express";
 import { getUserVar } from "../common/Util";
+import { logE } from "../common/MessageUtil";
 import UtilFile from "../accessData";
 import StreamingData from "../streamingData";
+import {
+  SUCCESS_STATUS,
+  PARTIAL_CONTENT_STATUS,
+} from "../common/AppServerContant";
+import { getHeadStream } from "../common/StreamingUtil";
 
-const { streamData } = StreamingData;
-const { getFiles } = UtilFile;
+const { streamData, createStreamNoRange } = StreamingData;
+const { getFiles, getFileDirInfo } = UtilFile;
 const { moviesLocation, baseLocation } = getUserVar();
 const router = express.Router();
 
@@ -49,18 +55,18 @@ function passingBaseLocation(req, response) {
 function StreamingVideo(request, response) {
   const { folder, fileName, range } = request.params;
   const fileAbsPath = `${baseLocationMovie}/${folder}/${fileName}`;
-  
+  const statInfo = getFileDirInfo(fileAbsPath);
+  const { size } = statInfo;
   try {
     if (range) {
       const videoStream = streamData({ fileAbsPath, range });
       streamListener(videoStream, response);
-
       response.writeHead(
         PARTIAL_CONTENT_STATUS,
         getHeadStream(start, end, size)
       );
     } else {
-      createStreamNoRange(fileAbsPath);
+      createStreamNoRange(fileAbsPath, response);
       response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));
     }
   } catch (error) {

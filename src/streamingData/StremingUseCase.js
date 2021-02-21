@@ -22,9 +22,9 @@ export default function StreamingUseCase({ streamingApi, accessDataApi }) {
         throw error;
       }
     },
-    createStreamNoRange: function (fileAbsPath) {
+    createStreamNoRange: function (fileAbsPath, response) {
       try {
-        createStreamNoRange(fileAbsPath);
+        createStreamNoRange(fileAbsPath, response);
       } catch (error) {
         logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
         throw error;
