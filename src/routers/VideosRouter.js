@@ -7,7 +7,7 @@ import {
   SUCCESS_STATUS,
   PARTIAL_CONTENT_STATUS,
 } from "../common/AppServerContant";
-import { getHeadStream } from "../common/StreamingUtil";
+import { getHeadStream, streamListener } from "../common/StreamingUtil";
 
 const { streamData, createStreamNoRange } = StreamingData;
 const { getFiles, getFileDirInfo } = UtilFile;
@@ -53,20 +53,21 @@ function passingBaseLocation(req, response) {
   flushJSON(response, videos);
 }
 function StreamingVideo(request, response) {
-  const { folder, fileName, range } = request.params;
+  const { folder, fileName } = request.params;
+  const { range } = request.headers;
   const fileAbsPath = `${baseLocationMovie}/${folder}/${fileName}`;
   const statInfo = getFileDirInfo(fileAbsPath);
   const { size } = statInfo;
   try {
     if (range) {
-      const videoStream = streamData({ fileAbsPath, range });
-      streamListener(videoStream, response);
+      const { stream, start, end } = streamData({ fileAbsPath, range });
+      streamListener(stream, response);
       response.writeHead(
         PARTIAL_CONTENT_STATUS,
         getHeadStream(start, end, size)
       );
     } else {
-      createStreamNoRange(fileAbsPath, response);
+      createStreamNoRange(fileAbsPath).pipe(response);
       response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));
     }
   } catch (error) {

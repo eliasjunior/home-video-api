@@ -14,17 +14,15 @@ export default function StreamingUseCase({ streamingApi, accessDataApi }) {
 
         const stream = createReadStream({ fileAbsPath, start, end });
 
-        logD(stream);
-
-        return stream;
+        return { stream, start, end };
       } catch (error) {
         logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
         throw error;
       }
     },
-    createStreamNoRange: function (fileAbsPath, response) {
+    createStreamNoRange: function (fileAbsPath) {
       try {
-        createStreamNoRange(fileAbsPath, response);
+        return createStreamNoRange(fileAbsPath);
       } catch (error) {
         logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
         throw error;

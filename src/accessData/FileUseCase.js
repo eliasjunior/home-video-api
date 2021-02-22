@@ -6,6 +6,8 @@ import {
   isThereVideoFile,
 } from "./FileHelper";
 import { mapMedia } from "./MediaMapper";
+import { logE } from "../common/MessageUtil";
+import { DEFAULT_ENCONDING } from "../common/AppServerContant";
 
 export default function FileUseCase({ FileApi }) {
   const { readDirectory, isDirExist, fileExtEqual, readFile } = FileApi;
@@ -13,8 +15,12 @@ export default function FileUseCase({ FileApi }) {
     getFileDirInfo: function (fullPath) {
       return FileApi.readFileInfo(fullPath);
     },
-    readFile(absolutPath, encondig = DEFAULT_ENCONDING) {
-      return readFile(absolutPath, encondig);
+    readFile({ absolutPath, encondig = DEFAULT_ENCONDING, logError = true }) {
+      try {
+        return readFile(absolutPath, encondig);
+      } catch (err) {
+        logE(`Unable to read file ${absolutPath}: `, logError ? err : "");
+      }
     },
     getFiles: function ({ baseLocation }) {
       //It just goes 1 level in the folder

@@ -7,8 +7,9 @@ export function log(message) {
   console.log(message);
 }
 
-export function logD(message) {
-  console.log("=============");
-  console.log(message);
-  console.log("=============");
+export function logD(message, show = false) {
+  if (show) {
+    console.log("Debug =============");
+    console.log(message);
+  }
 }

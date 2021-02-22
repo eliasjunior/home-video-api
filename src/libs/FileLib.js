@@ -33,7 +33,7 @@ export default function FileLib() {
           return fs.readFileSync(fileUrl, encoding);
         }
       } catch (err) {
-        console.error(`Unable to read file ${fileUrl}: `);
+        throw err;
       }
     },
     isDirExist: function (folderPath) {

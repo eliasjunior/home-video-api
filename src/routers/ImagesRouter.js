@@ -2,6 +2,7 @@ import express from "express";
 import { IMG_FALLBACK } from "../common/AppServerContant";
 import UtilFile from "../accessData";
 import { getUserVar } from "../common/Util";
+import { log } from "../common/MessageUtil";
 const { readFile } = UtilFile;
 const { imgBaseLocation, baseLocation } = getUserVar();
 
@@ -16,11 +17,13 @@ function getImgFromMovie(req, response) {
     .slice(0, fileName.length - MINUS_EXT_INDEX)
     .concat(".jpg");
 
-  const fileAbsolutePath = `${baseLocationImgs}/${folder}/${imgFileName}`;
-  let img = readFile(fileAbsolutePath, "none");
+  const absolutPath = `${baseLocationImgs}/${folder}/${imgFileName}`;
+  let img = readFile({ absolutPath, encondig: "none", logError: false });
   if (!img) {
+    const fallbackFolder = `${PWD}/public/${IMG_FALLBACK}`;
+    log(`img not found trying to load fallback img`);
     // fallback img
-    img = readFile(`${PWD}/public/${IMG_FALLBACK}`, "none");
+    img = readFile({ absolutPath: fallbackFolder, encondig: "none" });
   }
   response.write(img, "binary");
   response.end(null, "binary");

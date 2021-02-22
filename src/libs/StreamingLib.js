@@ -9,11 +9,11 @@ export default function StreamingUseCase() {
         throw error;
       }
     },
-    createStreamNoRange: function (fileAbsPath, response) {
+    createStreamNoRange: function (fileAbsPath) {
       try {
-        fs.createReadStream(fileAbsPath).pipe(response);
+        return fs.createReadStream(fileAbsPath);
       } catch (error) {
-        return error;
+        throw error;
       }
     },
   };
