@@ -11,8 +11,8 @@ function streamListener(videoStream, response) {
   });
 
   videoStream.on("error", (error) => {
-    console.log("ERROR ###################");
-    console.log(error);
+    console.error("ERROR ###################");
+    console.error(error);
   });
 }
 function getHeadStream(start, end, size) {
