@@ -17,14 +17,16 @@ export default function config() {
     result.host = SERVER_HOST;
     result.imgFolderFallBack = IMG_FOLDER_FALL_BACK;
     result.videosPath = VIDEO_PATH;
+    result.baseLocation = "";
   } else {
     result.protocol = "http";
     result.port = 8080;
     result.host = "localhost";
     result.imgFolderFallBack = "/Downloads/Images";
     result.videosPath = "/Downloads/Movies";
+    result.baseLocation = USER_LOCATION;
   }
-  result.baseLocation = USER_LOCATION;
+  
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
   return result;
 }
