@@ -1,28 +1,12 @@
-import { logD, logE } from "../common/MessageUtil";
-import { getStartEndBytes } from "../common/StreamingUtil";
+import { logE } from "../common/MessageUtil";
 
-export default function StreamingUseCase({ streamingApi, accessDataApi }) {
-  const { createReadStream, createStreamNoRange } = streamingApi;
-  const { getFileDirInfo } = accessDataApi;
+export default function StreamingUseCase({ streamingApi }) {
+  const { createReadStream } = streamingApi;
   return {
-    createStream: function ({ fileAbsPath, range }) {
+    createStream: function ({ fileAbsPath, start, end }) {
       try {
-        let statInfo = getFileDirInfo(fileAbsPath);
-        const { size } = statInfo;
-
-        const { start, end } = getStartEndBytes(range, size);
-
         const streamChunk = createReadStream({ fileAbsPath, start, end });
-
-        return { streamChunk, start, end };
-      } catch (error) {
-        logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
-        throw error;
-      }
-    },
-    createStreamNoRange: function (fileAbsPath) {
-      try {
-        return createStreamNoRange(fileAbsPath);
+        return { streamChunk };
       } catch (error) {
         logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
         throw error;

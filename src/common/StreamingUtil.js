@@ -1,9 +1,9 @@
 const { logD } = require("./MessageUtil");
 //TODO tidy up here, it should go the use case or add all to the lib + useCase function
-function streamListener(streamChunk, response) {
+function streamListener(streamChunk, outWriter) {
   streamChunk.on("open", () => {
     console.log("Stream Opened!");
-    streamChunk.pipe(response);
+    streamChunk.pipe(outWriter);
   });
 
   streamChunk.on("close", () => {

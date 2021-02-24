@@ -6,7 +6,11 @@ import {
   SUCCESS_STATUS,
   PARTIAL_CONTENT_STATUS,
 } from "../common/AppServerContant";
-import { getHeadStream, streamListener } from "../common/StreamingUtil";
+import {
+  getHeadStream,
+  streamListener,
+  getStartEndBytes,
+} from "../common/StreamingUtil";
 import config from "../config";
 const { videosPath, baseLocation } = config();
 
@@ -58,16 +62,22 @@ function StreamingVideo(request, response) {
   const fileAbsPath = `${baseLocationVideo}/${folder}/${fileName}`;
   const statInfo = getFileDirInfo(fileAbsPath);
   const { size } = statInfo;
+  const { start, end } = getStartEndBytes(range, size);
+
   try {
     if (range) {
-      const { streamChunk, start, end } = createStream({ fileAbsPath, range });
+      const { streamChunk } = createStream({
+        fileAbsPath,
+        start,
+        end,
+      });
       streamListener(streamChunk, response);
       response.writeHead(
         PARTIAL_CONTENT_STATUS,
         getHeadStream(start, end, size)
       );
     } else {
-      createStreamNoRange(fileAbsPath).pipe(response);
+      createStream(fileAbsPath).pipe(response);
       response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));
     }
   } catch (error) {
