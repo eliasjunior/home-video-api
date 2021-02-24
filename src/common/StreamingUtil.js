@@ -1,16 +1,16 @@
 const { logD } = require("./MessageUtil");
-//TODO tidy up here
-function streamListener(videoStream, response) {
-  videoStream.on("open", () => {
+//TODO tidy up here, it should go the use case or add all to the lib + useCase function
+function streamListener(streamChunk, response) {
+  streamChunk.on("open", () => {
     console.log("Stream Opened!");
-    videoStream.pipe(response);
+    streamChunk.pipe(response);
   });
 
-  videoStream.on("close", () => {
+  streamChunk.on("close", () => {
     console.log("Stream has been Closed");
   });
 
-  videoStream.on("error", (error) => {
+  streamChunk.on("error", (error) => {
     console.error("ERROR ###################");
     console.error(error);
   });

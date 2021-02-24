@@ -1,5 +1,4 @@
 import express from "express";
-import { getUserVar } from "../common/Util";
 import { logE } from "../common/MessageUtil";
 import UtilFile from "../accessData";
 import StreamingData from "../streamingData";
@@ -8,20 +7,21 @@ import {
   PARTIAL_CONTENT_STATUS,
 } from "../common/AppServerContant";
 import { getHeadStream, streamListener } from "../common/StreamingUtil";
+import config from "../config";
+const { videosPath, baseLocation } = config();
 
-const { streamData, createStreamNoRange } = StreamingData;
+const { createStream, createStreamNoRange } = StreamingData;
 const { getFiles, getFileDirInfo } = UtilFile;
-const { moviesLocation, baseLocation } = getUserVar();
 const router = express.Router();
 
 let MovieMap = { byId: {}, allIds: [] };
-let baseLocationMovie = baseLocation + moviesLocation;
+let baseLocationVideo = baseLocation + videosPath;
 
 function redirectMovies(_, res) {
   res.redirect("/videos");
 }
 function loadMovies(_, response) {
-  const videos = getFiles({ baseLocation: baseLocationMovie });
+  const videos = getFiles({ baseLocation: baseLocationVideo });
 
   MovieMap = videos.allIds.reduce(
     (prev, id) => {
@@ -48,20 +48,20 @@ function loadMovie(req, response) {
 function passingBaseLocation(req, response) {
   const { baseLocation } = req.params;
   const temp = "/" + baseLocation.replace(/\./g, "/");
-  baseLocationMovie = temp;
+  baseLocationVideo = temp;
   const videos = getFiles({ baseLocation: temp });
   flushJSON(response, videos);
 }
 function StreamingVideo(request, response) {
   const { folder, fileName } = request.params;
   const { range } = request.headers;
-  const fileAbsPath = `${baseLocationMovie}/${folder}/${fileName}`;
+  const fileAbsPath = `${baseLocationVideo}/${folder}/${fileName}`;
   const statInfo = getFileDirInfo(fileAbsPath);
   const { size } = statInfo;
   try {
     if (range) {
-      const { stream, start, end } = streamData({ fileAbsPath, range });
-      streamListener(stream, response);
+      const { streamChunk, start, end } = createStream({ fileAbsPath, range });
+      streamListener(streamChunk, response);
       response.writeHead(
         PARTIAL_CONTENT_STATUS,
         getHeadStream(start, end, size)

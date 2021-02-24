@@ -1,6 +1,8 @@
 export function logE(message, err) {
   console.error(message);
-  console.error(err);
+  if (err) {
+    console.error(err);
+  }
 }
 
 export function log(message) {

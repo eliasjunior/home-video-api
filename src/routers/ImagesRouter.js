@@ -1,12 +1,12 @@
 import express from "express";
 import { IMG_FALLBACK } from "../common/AppServerContant";
 import UtilFile from "../accessData";
-import { getUserVar } from "../common/Util";
 import { log } from "../common/MessageUtil";
+import config from "../config";
+const { imgFolderFallBack, baseLocation } = config();
 const { readFile } = UtilFile;
-const { imgBaseLocation, baseLocation } = getUserVar();
 
-let baseLocationImgs = baseLocation + imgBaseLocation;
+let baseLocationImgs = baseLocation + imgFolderFallBack;
 const router = express.Router();
 const { PWD } = process.env;
 
@@ -21,7 +21,7 @@ function getImgFromMovie(req, response) {
   let img = readFile({ absolutPath, encondig: "none", logError: false });
   if (!img) {
     const fallbackFolder = `${PWD}/public/${IMG_FALLBACK}`;
-    log(`img not found trying to load fallback img`);
+    log(`=== > img[${imgFileName}] not found trying to load fallback img`);
     // fallback img
     img = readFile({ absolutPath: fallbackFolder, encondig: "none" });
   }

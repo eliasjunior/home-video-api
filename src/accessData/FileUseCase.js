@@ -41,11 +41,15 @@ export default function FileUseCase({ FileApi }) {
           .filter((folderName) => getValidFileList(folderName).length > 0)
           .reduce(
             (prev, folderName) => {
-              const files = getValidFileList(folderName).filter((fileName) =>
-                isThereVideoFile(fileName, fileExtEqual)
-              );
-              if (files.length) {
-                const media = mapMedia(files, folderName, fileExtEqual);
+              // reuse getValidFileList for the files in the folder
+              const containVideo =
+          
+                     getValidFileList(folderName).filter((fileName) =>
+                    isThereVideoFile(fileName, fileExtEqual)
+                  ).length > 0;
+              if (containVideo) {
+                const folderFiles = getValidFileList(folderName);
+                const media = mapMedia(folderFiles, folderName, fileExtEqual);
                 prev.byId[folderName] = media;
                 prev.allIds.push(media.id);
               }

@@ -1,14 +1,16 @@
 import express from "express";
 import fs from "fs";
-import { getUserVar } from "../common/Util";
 const router = express.Router();
-const { moviesLocation, baseLocation } = getUserVar();
+import config from "../config";
+const { videosPath, baseLocation } = config();
+import UtilFile from "../accessData";
+const { getFileExt, readFile } = UtilFile;
 
 function getCaption(request, response) {
   const { folder, fileName } = request.params;
-  let baseLocationMovie = baseLocation + moviesLocation;
+  let baseLocationVideo = baseLocation + videosPath;
 
-  const fileAbsolutePath = baseLocationMovie + "/" + folder + "/" + fileName;
+  const fileAbsolutePath = baseLocationVideo + "/" + folder + "/" + fileName;
 
   const ext = getFileExt(fileName);
 
@@ -16,11 +18,10 @@ function getCaption(request, response) {
     response.setHeader("content-type", "vtt");
     fs.createReadStream(fileAbsolutePath).pipe(response);
   } else {
-    // TODO have to stream because its crashing
-    // const subsrt = require('subsrt');
-    // let srtContent = readFile(fileAbsolutePath, '');
-    // const srt = subsrt.convert(srtContent, { format: "vtt", fps: 25 });
-    // fs.createReadStream(srt).pipe(response);
+    const subsrt = require("subsrt");
+    let srtContent = readFile({ absolutPath: fileAbsolutePath });
+    const srt = subsrt.convert(srtContent, { format: "vtt", fps: 25 });
+    response.send(srt);
   }
 }
 

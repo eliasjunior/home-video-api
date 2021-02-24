@@ -1,12 +1,13 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
 import VideosRouter from "./src/routers/VideosRouter";
 import ImagesRouter from "./src/routers/ImagesRouter";
 import CaptionsRouter from "./src/routers/CaptionsRouter";
+import config from "./src/config";
+const { serverUrl, port } = config();
 
 import path from "path";
-import { getServerUrl, getPort } from "./src/common/Util";
 
 let app = express();
 
@@ -19,6 +20,6 @@ app.use("/", VideosRouter);
 app.use("/", ImagesRouter);
 app.use("/", CaptionsRouter);
 
-app.listen(getPort(), () => {
-  console.log(`Application started, ${getServerUrl()}`);
+app.listen(port, () => {
+  console.log(`Application started, ${serverUrl}`);
 });

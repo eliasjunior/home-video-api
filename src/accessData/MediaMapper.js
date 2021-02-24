@@ -16,10 +16,11 @@ export function mapMedia(fileNameList, folderName, fileExtEqual) {
   const sub = fileNameList
     .filter((name) => {
       const fileExt = fileExtEqual(name);
+
       return SUB_FORMATS.includes(fileExt);
     })
     .pop();
-
+ 
   const img = fileNameList
     .filter((name) => {
       const fileExt = fileExtEqual(name);
