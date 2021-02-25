@@ -2,15 +2,14 @@ import express from "express";
 import fs from "fs";
 const router = express.Router();
 import config from "../config";
-const { videosPath, baseLocation } = config();
+const { videosPath } = config();
 import UtilFile from "../accessData";
 const { getFileExt, readFile } = UtilFile;
 
 function getCaption(request, response) {
   const { folder, fileName } = request.params;
-  let baseLocationVideo = baseLocation + videosPath;
 
-  const fileAbsolutePath = baseLocationVideo + "/" + folder + "/" + fileName;
+  const fileAbsolutePath = videosPath + "/" + folder + "/" + fileName;
 
   const ext = getFileExt(fileName);
 

@@ -43,10 +43,9 @@ export default function FileUseCase({ FileApi }) {
             (prev, folderName) => {
               // reuse getValidFileList for the files in the folder
               const containVideo =
-          
-                     getValidFileList(folderName).filter((fileName) =>
-                    isThereVideoFile(fileName, fileExtEqual)
-                  ).length > 0;
+                getValidFileList(folderName).filter((fileName) =>
+                  isThereVideoFile(fileName, fileExtEqual)
+                ).length > 0;
               if (containVideo) {
                 const folderFiles = getValidFileList(folderName);
                 const media = mapMedia(folderFiles, folderName, fileExtEqual);

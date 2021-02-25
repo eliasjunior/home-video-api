@@ -3,32 +3,39 @@ import { IMG_FALLBACK } from "../common/AppServerContant";
 import UtilFile from "../accessData";
 import { log } from "../common/MessageUtil";
 import config from "../config";
-const { imgFolderFallBack, baseLocation } = config();
+const { imgFolderFallBack, videosPath } = config();
 const { readFile } = UtilFile;
+import { getMovieMap } from "../common/Util";
 
-let baseLocationImgs = baseLocation + imgFolderFallBack;
 const router = express.Router();
 const { PWD } = process.env;
 
 function getImgFromMovie(req, response) {
-  const { folder, fileName } = req.params;
+  const { id } = req.params;
   const MINUS_EXT_INDEX = 4;
-  const imgFileName = fileName
-    .slice(0, fileName.length - MINUS_EXT_INDEX)
-    .concat(".jpg");
-
-  const absolutPath = `${baseLocationImgs}/${folder}/${imgFileName}`;
-  let img = readFile({ absolutPath, encondig: "none", logError: false });
-  if (!img) {
+  const MovieMap = getMovieMap();
+ 
+  const { name, img } = MovieMap.byId[id];
+  let imgTemp = img
+  let absolutPath = `${videosPath}/${id}/${img}`;
+  if (imgFolderFallBack) {//PROD
+    imgTemp = name
+        .slice(0, name.length - MINUS_EXT_INDEX)
+        .concat(".jpg");
+    absolutPath = `${imgFolderFallBack}/${id}/${imgTemp}`;
+  } 
+  
+  let imgBin = readFile({ absolutPath, encondig: "none", logError: false });
+  if (!imgBin) {
     const fallbackFolder = `${PWD}/public/${IMG_FALLBACK}`;
-    log(`=== > img[${imgFileName}] not found trying to load fallback img`);
+    log(`=== > img[${imgTemp}] not found trying to load fallback img`);
     // fallback img
-    img = readFile({ absolutPath: fallbackFolder, encondig: "none" });
+    imgBin = readFile({ absolutPath: fallbackFolder, encondig: "none" });
   }
-  response.write(img, "binary");
+  response.write(imgBin, "binary");
   response.end(null, "binary");
 }
 
-router.get("/images/:folder/:fileName", getImgFromMovie);
+router.get("/images/:id", getImgFromMovie);
 
 export default router;

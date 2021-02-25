@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import fs from "fs";
 import path from "path";
 import { logE } from "../common/MessageUtil";

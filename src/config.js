@@ -15,18 +15,15 @@ export default function config() {
     result.protocol = SERVER_PROTOCOL;
     result.port = process.env.PORT || SERVER_PORT;
     result.host = SERVER_HOST;
-    result.imgFolderFallBack = IMG_FOLDER_FALL_BACK;
+    result.imgFolderFallBack = USER_LOCATION + IMG_FOLDER_FALL_BACK;
     result.videosPath = VIDEO_PATH;
-    result.baseLocation = "";
   } else {
     result.protocol = "http";
     result.port = 8080;
     result.host = "localhost";
-    result.imgFolderFallBack = "/Downloads/Images";
-    result.videosPath = "/Downloads/Movies";
-    result.baseLocation = USER_LOCATION;
+    result.videosPath = `${USER_LOCATION}/Downloads/Movies`;
   }
-  
+  result.baseLocation = USER_LOCATION;
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
   return result;
 }

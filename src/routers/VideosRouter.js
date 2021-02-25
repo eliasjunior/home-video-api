@@ -12,22 +12,22 @@ import {
   getStartEndBytes,
 } from "../common/StreamingUtil";
 import config from "../config";
-const { videosPath, baseLocation } = config();
+const { videosPath } = config();
+import { setMovieMap, getMovieMap } from "../common/Util";
 
-const { createStream, createStreamNoRange } = StreamingData;
+const { createStream } = StreamingData;
 const { getFiles, getFileDirInfo } = UtilFile;
 const router = express.Router();
 
-let MovieMap = { byId: {}, allIds: [] };
-let baseLocationVideo = baseLocation + videosPath;
+//let MovieMap = { byId: {}, allIds: [] };
 
 function redirectMovies(_, res) {
   res.redirect("/videos");
 }
 function loadMovies(_, response) {
-  const videos = getFiles({ baseLocation: baseLocationVideo });
-
-  MovieMap = videos.allIds.reduce(
+  const videos = getFiles({ baseLocation: videosPath });
+  
+  const tempMap = videos.allIds.reduce(
     (prev, id) => {
       prev.byId[id] = videos.byId[id];
       prev.allIds.push(id);
@@ -35,11 +35,13 @@ function loadMovies(_, response) {
     },
     { byId: {}, allIds: [] }
   );
+  setMovieMap(tempMap);
 
   flushJSON(response, videos);
 }
 function loadMovie(req, response) {
   const { id } = req.params;
+  const MovieMap = getMovieMap();
   if (MovieMap.allIds.length === 0) {
     //TODO do it later, in case the map empty need to call getFiles
   }
@@ -52,14 +54,13 @@ function loadMovie(req, response) {
 function passingBaseLocation(req, response) {
   const { baseLocation } = req.params;
   const temp = "/" + baseLocation.replace(/\./g, "/");
-  baseLocationVideo = temp;
   const videos = getFiles({ baseLocation: temp });
   flushJSON(response, videos);
 }
 function StreamingVideo(request, response) {
   const { folder, fileName } = request.params;
   const { range } = request.headers;
-  const fileAbsPath = `${baseLocationVideo}/${folder}/${fileName}`;
+  const fileAbsPath = `${videosPath}/${folder}/${fileName}`;
   const statInfo = getFileDirInfo(fileAbsPath);
   const { size } = statInfo;
   const { start, end } = getStartEndBytes(range, size);
