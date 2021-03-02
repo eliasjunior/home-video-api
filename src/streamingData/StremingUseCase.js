@@ -5,8 +5,11 @@ export default function StreamingUseCase({ streamingApi }) {
   return {
     createStream: function ({ fileAbsPath, start, end }) {
       try {
-        const streamChunk = createReadStream({ fileAbsPath, start, end });
-        return { streamChunk };
+        if (start !== undefined) {
+          return { streamChunk: createReadStream({ fileAbsPath, start, end }) };
+        } else {
+          return { streamChunk: createReadStream({ fileAbsPath }) };
+        }
       } catch (error) {
         logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
         throw error;

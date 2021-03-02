@@ -4,18 +4,15 @@ import path from "path";
 import { logE } from "../common/MessageUtil";
 import { DEFAULT_ENCONDING } from "../common/AppServerContant";
 
-const EMPTY_INFO = "";
-
 export default function FileLib() {
   return {
     readFileInfo: function (fullPath) {
       //get file info, size
       try {
         return fs.statSync(`${fullPath}`);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        throw err;
       }
-      return EMPTY_INFO;
     },
     readDirectory: function (folderLocation) {
       try {

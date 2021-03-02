@@ -1,6 +1,6 @@
 import express from "express";
 import { logE } from "../common/MessageUtil";
-import UtilFile from "../accessData";
+import DataAccess from "../accessData";
 import StreamingData from "../streamingData";
 import {
   SUCCESS_STATUS,
@@ -16,17 +16,15 @@ const { videosPath } = config();
 import { setMovieMap, getMovieMap } from "../common/Util";
 
 const { createStream } = StreamingData;
-const { getFiles, getFileDirInfo } = UtilFile;
+const { getFiles, getFileDirInfo } = DataAccess;
 const router = express.Router();
-
-//let MovieMap = { byId: {}, allIds: [] };
 
 function redirectMovies(_, res) {
   res.redirect("/videos");
 }
 function loadMovies(_, response) {
   const videos = getFiles({ baseLocation: videosPath });
-  
+
   const tempMap = videos.allIds.reduce(
     (prev, id) => {
       prev.byId[id] = videos.byId[id];
@@ -61,22 +59,27 @@ function StreamingVideo(request, response) {
   const { folder, fileName } = request.params;
   const { range } = request.headers;
   const fileAbsPath = `${videosPath}/${folder}/${fileName}`;
-  const statInfo = getFileDirInfo(fileAbsPath);
-  const { size } = statInfo;
-  const { start, end } = getStartEndBytes(range, size);
 
   try {
+    const statInfo = getFileDirInfo(fileAbsPath);
+    const { size } = statInfo;
+    const { start, end } = getStartEndBytes(range, size);
+    console.log(size, range);
     if (range) {
       const { streamChunk } = createStream({
         fileAbsPath,
         start,
         end,
       });
-      streamListener(streamChunk, response);
       response.writeHead(
         PARTIAL_CONTENT_STATUS,
         getHeadStream(start, end, size)
       );
+      streamListener({
+        streamChunk,
+        useCaseLabel: "video",
+        outputWriter: response,
+      });
     } else {
       createStream(fileAbsPath).pipe(response);
       response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));

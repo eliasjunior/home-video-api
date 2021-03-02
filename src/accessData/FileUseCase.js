@@ -13,13 +13,19 @@ export default function FileUseCase({ FileApi }) {
   const { readDirectory, isDirExist, fileExtEqual, readFile } = FileApi;
   return {
     getFileDirInfo: function (fullPath) {
-      return FileApi.readFileInfo(fullPath);
+      try {
+        return FileApi.readFileInfo(fullPath);
+      } catch (error) {
+        logE(`Unable to read file information ${fullPath}: `);
+        throw error;
+      }
     },
     readFile({ absolutPath, encondig = DEFAULT_ENCONDING, logError = true }) {
       try {
         return readFile(absolutPath, encondig);
       } catch (err) {
         logE(`Unable to read file ${absolutPath}: `, logError ? err : "");
+        //TODO check return for not to crash
       }
     },
     getFiles: function ({ baseLocation }) {

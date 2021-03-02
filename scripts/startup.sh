@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup npm start > ~/Temp/logs/api.log
+nohup npm start > /home/pi/Temp/logs/api.log &

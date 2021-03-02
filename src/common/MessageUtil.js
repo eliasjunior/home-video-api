@@ -1,5 +1,5 @@
 export function logE(message, err) {
-  console.error(message);
+  console.error(` ====== ERR! ======= \n${message}`);
   if (err) {
     console.error(err);
   }
