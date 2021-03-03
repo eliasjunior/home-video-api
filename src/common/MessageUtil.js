@@ -5,12 +5,9 @@ export function logE(message, err) {
   }
 }
 
-export function log(message) {
-  console.log(message);
-}
-
-export function logD(message, show = false) {
-  if (show) {
+export function logD(message) {
+  const { showdebug } = process.env;
+  if (showdebug) {
     console.log("Debug =============");
     console.log(message);
   }

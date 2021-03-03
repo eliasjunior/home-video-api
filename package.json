@@ -7,6 +7,8 @@
     "test": "jest",
     "start": "NODE_ENV=production babel-node init.js",
     "dev": "nodemon --exec babel-node init.js",
+    "debugP": "NODE_ENV=production showdebug=true babel-node init.js",
+    "debugD": "showdebug=true nodemon --exec babel-node init.js",
     "express": "^4.16.4"
   },
   "repository": {

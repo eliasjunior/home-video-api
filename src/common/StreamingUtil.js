@@ -13,13 +13,13 @@ export function streamEvents({
   outputWriter = requiredParameter("outputWriter"),
 }) {
   readStream.on("open", () => {
-    console.log(`Stream ${useCaseLabel} opened `);
+    logD(`Stream ${useCaseLabel} opened `);
   });
   readStream.on("data", (chunk) => {
     outputWriter.write(chunk);
   });
   readStream.on("end", () => {
-    console.log(`Stream ${useCaseLabel} ended.`);
+    logD(`Stream ${useCaseLabel} ended.`);
     outputWriter.status(SUCCESS_STATUS).send().end();
   });
   readStream.on("error", (error) => {
