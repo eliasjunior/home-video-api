@@ -24,7 +24,7 @@ function getImgFromMovie(req, response) {
         .concat(".jpg");
     absolutPath = `${imgFolderFallBack}/${id}/${imgTemp}`;
   } 
-  
+  logD("====*** absolutPath=" + absolutPath);
   let imgBin = readFile({ absolutPath, encondig: "none", logError: false });
   if (!imgBin) {
     const fallbackFolder = `${PWD}/public/${IMG_FALLBACK}`;
