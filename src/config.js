@@ -15,7 +15,7 @@ export default function config() {
     result.protocol = SERVER_PROTOCOL;
     result.port = process.env.PORT || SERVER_PORT;
     result.host = SERVER_HOST;
-    result.imgFolderFallBack = USER_LOCATION + IMG_FOLDER_FALL_BACK;
+    result.imgFolderFallBack = getUserLocProd() + IMG_FOLDER_FALL_BACK;
     result.videosPath = VIDEO_PATH;
   } else {
     result.protocol = "http";
@@ -26,4 +26,8 @@ export default function config() {
   result.baseLocation = USER_LOCATION;
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
   return result;
+}
+
+function getUserLocProd() {
+  return USER_LOCATION === "/root" ? "/home/pi" : USER_LOCATION;
 }
