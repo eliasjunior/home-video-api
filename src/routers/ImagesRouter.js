@@ -1,7 +1,7 @@
 import express from "express";
 import { IMG_FALLBACK } from "../common/AppServerContant";
 import UtilFile from "../accessData";
-import { log } from "../common/MessageUtil";
+import { logD } from "../common/MessageUtil";
 import config from "../config";
 const { imgFolderFallBack, videosPath } = config();
 const { readFile } = UtilFile;
@@ -28,7 +28,7 @@ function getImgFromMovie(req, response) {
   let imgBin = readFile({ absolutPath, encondig: "none", logError: false });
   if (!imgBin) {
     const fallbackFolder = `${PWD}/public/${IMG_FALLBACK}`;
-    log(`=== > img[${imgTemp}] not found trying to load fallback img`);
+    logD(`=== > img[${imgTemp}] not found trying to load fallback img`);
     // fallback img
     imgBin = readFile({ absolutPath: fallbackFolder, encondig: "none" });
   }

@@ -6,7 +6,7 @@ import {
   isThereVideoFile,
 } from "./FileHelper";
 import { mapMedia } from "./MediaMapper";
-import { logE } from "../common/MessageUtil";
+import { logD, logE } from "../common/MessageUtil";
 import { DEFAULT_ENCONDING } from "../common/AppServerContant";
 
 export default function FileUseCase({ FileApi }) {
@@ -24,8 +24,7 @@ export default function FileUseCase({ FileApi }) {
       try {
         return readFile(absolutPath, encondig);
       } catch (err) {
-        logE(`Unable to read file ${absolutPath}: `, logError ? err : "");
-        //TODO check return for not to crash
+        logD(`Unable to read file ${absolutPath}: `, logError ? err : "");
       }
     },
     getFiles: function ({ baseLocation }) {

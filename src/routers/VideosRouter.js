@@ -7,17 +7,24 @@ import {
   PARTIAL_CONTENT_STATUS,
 } from "../common/AppServerContant";
 import {
-  getHeadStream,
-  streamListener,
+  getHeaderStream,
+  streamEvents,
   getStartEndBytes,
 } from "../common/StreamingUtil";
 import config from "../config";
 const { videosPath } = config();
 import { setMovieMap, getMovieMap } from "../common/Util";
+import { sendError } from "./RouterUtil";
 
 const { createStream } = StreamingData;
 const { getFiles, getFileDirInfo } = DataAccess;
 const router = express.Router();
+
+router.get("/", redirectMovies);
+router.get("/videos", loadMovies);
+router.get("/videos/:id", loadMovie);
+router.get("/videos/nobase/:baseLocation", passingBaseLocation);
+router.get("/videos/:folder/:fileName", StreamingVideo);
 
 function redirectMovies(_, res) {
   res.redirect("/videos");
@@ -44,7 +51,12 @@ function loadMovie(req, response) {
     //TODO do it later, in case the map empty need to call getFiles
   }
   if (!MovieMap.byId[id]) {
-    flushJSON(response, `[${id}] was not found`);
+    logE(`Attempting to get a video in memory id ${id} has failed`);
+    sendError({
+      response,
+      message: "Something went wrong, file in memory resource not fully implemented or id does not exist",
+      statusCode: 501,
+    });
   } else {
     flushJSON(response, MovieMap.byId[id]);
   }
@@ -64,47 +76,47 @@ function StreamingVideo(request, response) {
     const statInfo = getFileDirInfo(fileAbsPath);
     const { size } = statInfo;
     const { start, end } = getStartEndBytes(range, size);
-    console.log(size, range);
     if (range) {
-      const { streamChunk } = createStream({
+      const headers = getHeaderStream({  start, end, size  });
+      //write the header on response and pass it to stream
+      response.writeHead(PARTIAL_CONTENT_STATUS, headers);
+
+      const readStream = createStream({
         fileAbsPath,
         start,
         end,
       });
-      response.writeHead(
-        PARTIAL_CONTENT_STATUS,
-        getHeadStream(start, end, size)
-      );
-      streamListener({
-        streamChunk,
+
+      // Stream the video chunk to the client
+      streamEvents({
+        readStream,
         useCaseLabel: "video",
         outputWriter: response,
       });
     } else {
-      createStream(fileAbsPath).pipe(response);
-      response.writeHead(SUCCESS_STATUS, getHeadStream(null, null, size));
+      logE(`NO RANGE ${fileAbsPath}`);
+      sendError({
+        response,
+        message: "There is no range",
+        statusCode: 500,
+      });
     }
   } catch (error) {
     logE(`Attempting to stream file path ${fileAbsPath} has failed`, error);
-    response
-      .status(500)
-      .send({
-        message:
-          "Something went wrong, file not found, maybe folder has a different name",
-        error: error.message,
-      })
-      .end();
+    sendError({
+      response,
+      message:
+        "Something went wrong, file not found, maybe folder has a different name",
+      statusCode: 500,
+      error,
+    });
   }
 }
 
-router.get("/", redirectMovies);
-router.get("/videos", loadMovies);
-router.get("/videos/:id", loadMovie);
-router.get("/videos/nobase/:baseLocation", passingBaseLocation);
-router.get("/videos/:folder/:fileName", StreamingVideo);
+// private functions
 
 function flushJSON(response, videos) {
-  response.status(200).json(videos).end();
+  response.status(SUCCESS_STATUS).json(videos).end();
 }
 
 export default router;
