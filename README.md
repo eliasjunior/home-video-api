@@ -2,7 +2,7 @@
 
 ## What is it ?
 
-- It's NodeJS streaming app to stream files that you can have on your machine or set up simple raspberry PI as a server on your home network.
+- It's NodeJS streaming app to stream media that you have on your machine or hard drive, you can as well set up a raspberry PI as a server on your home network.
 
 ## Why would you want to set up this app ?
 
