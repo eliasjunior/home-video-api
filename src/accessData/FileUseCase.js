@@ -7,7 +7,7 @@ import {
 } from "./FileHelper";
 import { mapMedia } from "./MediaMapper";
 import { logD, logE } from "../common/MessageUtil";
-import { DEFAULT_ENCONDING } from "../common/AppServerContant";
+import { DEFAULT_ENCONDING } from "../common/AppServerConstant";
 
 export default function FileUseCase({ FileApi }) {
   const { readDirectory, isDirExist, fileExtEqual, readFile } = FileApi;
@@ -20,11 +20,11 @@ export default function FileUseCase({ FileApi }) {
         throw error;
       }
     },
-    readFile({ absolutPath, encondig = DEFAULT_ENCONDING, logError = true }) {
+    readFile({ absolutePath, encoding = DEFAULT_ENCONDING, logError = true }) {
       try {
-        return readFile(absolutPath, encondig);
+        return readFile(absolutePath, encoding);
       } catch (err) {
-        logD(`Unable to read file ${absolutPath}: `, logError ? err : "");
+        logD(`Unable to read file ${absolutePath}: `, logError ? err : "");
       }
     },
     getFiles: function ({ baseLocation }) {

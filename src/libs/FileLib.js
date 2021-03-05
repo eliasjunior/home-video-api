@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { logE } from "../common/MessageUtil";
-import { DEFAULT_ENCONDING } from "../common/AppServerContant";
+import { DEFAULT_ENCONDING } from "../common/AppServerConstant";
 
 export default function FileLib() {
   return {

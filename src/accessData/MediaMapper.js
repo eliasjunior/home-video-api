@@ -3,7 +3,7 @@ import {
   SUB_FORMATS,
   IMG_FORMATS,
   IMG_FALLBACK,
-} from "../common/AppServerContant";
+} from "../common/AppServerConstant";
 
 export function mapMedia(fileNameList, folderName, fileExtEqual) {
   const name = fileNameList

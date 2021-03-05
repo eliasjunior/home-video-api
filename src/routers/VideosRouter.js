@@ -5,7 +5,7 @@ import StreamingData from "../streamingData";
 import {
   SUCCESS_STATUS,
   PARTIAL_CONTENT_STATUS,
-} from "../common/AppServerContant";
+} from "../common/AppServerConstant";
 import {
   getHeaderStream,
   streamEvents,
@@ -23,8 +23,7 @@ const router = express.Router();
 router.get("/", redirectMovies);
 router.get("/videos", loadMovies);
 router.get("/videos/:id", loadMovie);
-router.get("/videos/nobase/:baseLocation", passingBaseLocation);
-router.get("/videos/:folder/:fileName", StreamingVideo);
+router.get("/videos/:folder/:fileName", streamingVideo);
 
 function redirectMovies(_, res) {
   res.redirect("/videos");
@@ -61,13 +60,7 @@ function loadMovie(req, response) {
     flushJSON(response, MovieMap.byId[id]);
   }
 }
-function passingBaseLocation(req, response) {
-  const { baseLocation } = req.params;
-  const temp = "/" + baseLocation.replace(/\./g, "/");
-  const videos = getFiles({ baseLocation: temp });
-  flushJSON(response, videos);
-}
-function StreamingVideo(request, response) {
+function streamingVideo(request, response) {
   const { folder, fileName } = request.params;
   const { range } = request.headers;
   const fileAbsPath = `${videosPath}/${folder}/${fileName}`;
@@ -77,7 +70,7 @@ function StreamingVideo(request, response) {
     const { size } = statInfo;
     const { start, end } = getStartEndBytes(range, size);
     if (range) {
-      const headers = getHeaderStream({  start, end, size  });
+      const headers = getHeaderStream({ start, end, size });
       //write the header on response and pass it to stream
       response.writeHead(PARTIAL_CONTENT_STATUS, headers);
 

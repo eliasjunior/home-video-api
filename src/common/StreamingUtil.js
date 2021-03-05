@@ -4,7 +4,7 @@ import {
   EXPONENT,
   INTERNAL_SERVER_ERROR,
   SUCCESS_STATUS,
-} from "./AppServerContant";
+} from "./AppServerConstant";
 import { requiredParameter } from "./Util";
 
 export function streamEvents({

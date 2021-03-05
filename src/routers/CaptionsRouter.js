@@ -28,7 +28,7 @@ function getCaption(request, response) {
         outputWriter: response,
       });
     } else {
-      let srtContent = readFile({ absolutPath: fileAbsolutePath });
+      let srtContent = readFile({ absolutePath: fileAbsolutePath });
       const srt = subsrt.convert(srtContent, { format: "vtt", fps: 25 });
       response.send(srt);
     }

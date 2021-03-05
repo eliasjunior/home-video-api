@@ -1,4 +1,4 @@
-const { BASE_STREAM_CALC, EXPONENT } = require("./AppServerContant");
+const { BASE_STREAM_CALC, EXPONENT } = require("./AppServerConstant");
 const { getStartEndBytes, getHeaderStream } = require("./StreamingUtil");
 
 describe('VideoStreamingService', () => {
