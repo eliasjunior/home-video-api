@@ -1,7 +1,7 @@
 export const USER_LOCATION = require("os").homedir();
 export const COURSE_LOCATION = "/Documents/egghead";
 export const IMG_FALLBACK = "movie_fallback.png";
-export const VIDEO_FORMATS = [".mp4", ".m4v", ".mkv"];
+export const VIDEO_FORMATS = [".mp4", ".m4v", ".mkv", ".avi"];
 export const SUB_FORMATS = [".srt", ".vtt"];
 export const IMG_FORMATS = [".jpg", ".jpeg", "png"];
 export const DEFAULT_ENCONDING = "utf8";

@@ -34,32 +34,30 @@ export default function FileUseCase({ FileApi }) {
         verifyingOrphanFiles(baseLocation, { readDirectory, fileExtEqual });
         // get all folders including the ones that does not have video
         const allFolders = getFolderName(baseLocation, { readDirectory });
-
+        const loadFiles = (folderName) =>  getFilesFolder(
+          `${baseLocation}/${folderName}`,
+          readDirectory
+        );
         const getValidFileList = (folderName) => {
-          const fileList = getFilesFolder(
-            `${baseLocation}/${folderName}`,
-            readDirectory
-          );
-          return filterValidFiles(fileList, fileExtEqual);
+           // video, subtitles, img
+          return filterValidFiles(loadFiles(folderName), fileExtEqual);
         };
+        const onlyFolderWithValidFiles = (folderName) => getValidFileList(folderName).length > 0;
+        // reuse getValidFileList for the files in the folder
+        const isThereAVideoInFolder = (folderName) =>  getValidFileList(folderName).filter((fileName) =>
+        isThereVideoFile(fileName, fileExtEqual)
+        ).length > 0
+        const buildUpFoldersTable =  (prev, folderName) => {
+          const files = loadFiles(folderName);
+          const media = mapMedia(files, folderName, fileExtEqual);
+          prev.byId[folderName] = media;
+          prev.allIds.push(media.id);
+          return prev;
+        }
         return allFolders
-          .filter((folderName) => getValidFileList(folderName).length > 0)
-          .reduce(
-            (prev, folderName) => {
-              // reuse getValidFileList for the files in the folder
-              const containVideo =
-                getValidFileList(folderName).filter((fileName) =>
-                  isThereVideoFile(fileName, fileExtEqual)
-                ).length > 0;
-              if (containVideo) {
-                const folderFiles = getValidFileList(folderName);
-                const media = mapMedia(folderFiles, folderName, fileExtEqual);
-                prev.byId[folderName] = media;
-                prev.allIds.push(media.id);
-              }
-              return prev;
-            },
-            { byId: {}, allIds: [] }
+          .filter(onlyFolderWithValidFiles)
+          .filter(isThereAVideoInFolder)
+          .reduce(buildUpFoldersTable, { byId: {}, allIds: [] }
           );
       } else {
         console.info(`Dir ${baseLocation} does not exist`);
