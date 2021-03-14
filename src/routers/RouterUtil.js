@@ -26,6 +26,7 @@ export function imgProvider({ id, name, img }) {
   });
  
   if (binImg) {
+    logD(`=== > img[${img}] found`);
     return binImg;
   } else {
     const fallbackFolder = `${PWD}/public/${IMG_FALLBACK}`;
@@ -38,7 +39,7 @@ export function imgProvider({ id, name, img }) {
 // private functions
 
 function getImgPath({ fileName: name, id, img }) {
-  if (imgFolderFallBack) {
+  if (imgFolderFallBack && name.includes(IMG_FALLBACK)) {
     const imgTemp = name.slice(0, name.length - FILE_EXT_INDEX).concat(".jpg");
     return `${imgFolderFallBack}/${id}/${imgTemp}`;
   } else {

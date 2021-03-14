@@ -4,7 +4,6 @@ import { imgProvider } from "./RouterUtil";
 
 const router = express.Router();
 
-
 function getImgFromMovie(req, response) {
   const { id } = req.params;
 
