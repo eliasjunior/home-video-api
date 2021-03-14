@@ -20,7 +20,7 @@
 
 Some fields are self explanatory, other that are more specific see below
 
-- `IMG_FOLDER_FALL_BACK` In case the server cannot read the image from ther video folder
+- `IMG_FOLDER_FALL_BACK` In case the server cannot read the image from there video folder
 - `VIDEO_PATH` path of your videos
 
 #### Server video structure
@@ -28,10 +28,5 @@ Some fields are self explanatory, other that are more specific see below
 Example `VIDEO_PATH=/media/pi/ExternalHD/Movies` 
 
 
-[image]()
 
-
-### TODO
-- Add readme instructions
-- add category in movie(tag)
 
