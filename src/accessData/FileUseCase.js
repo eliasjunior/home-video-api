@@ -61,6 +61,7 @@ export default function FileUseCase({ FileApi }) {
           );
       } else {
         console.info(`Dir ${baseLocation} does not exist`);
+        return { byId: {}, allIds: [] };
       }
     },
     getFileExt(fileName) {

@@ -6,6 +6,7 @@ const {
   VIDEO_PATH,
   SERVER_PROTOCOL,
   SERVER_PORT,
+  VIDEO_PATH_LOCAL,
 } = process.env;
 import { USER_LOCATION } from "./common/AppServerConstant";
 
@@ -15,14 +16,15 @@ export default function config() {
     result.protocol = SERVER_PROTOCOL;
     result.port = process.env.PORT || SERVER_PORT;
     result.host = SERVER_HOST;
-    // in case you can't read the images from the video folder as its my case.
-    result.imgFolderFallBack = "/home/pi" + IMG_FOLDER_FALL_BACK;
+    // in case you want read the images/posters from the another folder.
+    result.imgFolderFallBack = IMG_FOLDER_FALL_BACK;
     result.videosPath = VIDEO_PATH;
   } else {
+    // local environment, just for development
     result.protocol = "http";
     result.port = 8080;
     result.host = "localhost";
-    result.videosPath = `${USER_LOCATION}/Downloads/Movies`;
+    result.videosPath = `${USER_LOCATION}/${VIDEO_PATH_LOCAL}`;
   }
   result.baseLocation = USER_LOCATION;
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;

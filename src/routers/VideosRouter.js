@@ -29,19 +29,35 @@ function redirectMovies(_, res) {
   res.redirect("/videos");
 }
 function loadMovies(_, response) {
-  const videos = getFiles({ baseLocation: videosPath });
+  try {
+    const videos = getFiles({ baseLocation: videosPath });
 
-  const tempMap = videos.allIds.reduce(
-    (prev, id) => {
-      prev.byId[id] = videos.byId[id];
-      prev.allIds.push(id);
-      return prev;
-    },
-    { byId: {}, allIds: [] }
-  );
-  setMovieMap(tempMap);
+    if (!videos.allIds.length) {
+      sendError({
+        response,
+        message: `No videos were found in the given location ${videosPath}`,
+        statusCode: 500,
+      });
+    }
+    const tempMap = videos.allIds.reduce(
+      (prev, id) => {
+        prev.byId[id] = videos.byId[id];
+        prev.allIds.push(id);
+        return prev;
+      },
+      { byId: {}, allIds: [] }
+    );
+    setMovieMap(tempMap);
 
-  flushJSON(response, videos);
+    flushJSON(response, videos);
+  } catch (error) {
+    sendError({
+      response,
+      message: "Attempt to load videos has failed",
+      statusCode: 500,
+      error,
+    });
+  }
 }
 function loadMovie(req, response) {
   const { id } = req.params;
@@ -53,7 +69,8 @@ function loadMovie(req, response) {
     logE(`Attempting to get a video in memory id ${id} has failed`);
     sendError({
       response,
-      message: "Something went wrong, file in memory resource not fully implemented or id does not exist",
+      message:
+        "Something went wrong, file in memory resource not fully implemented or id does not exist",
       statusCode: 501,
     });
   } else {
