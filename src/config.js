@@ -7,6 +7,8 @@ const {
   SERVER_PROTOCOL,
   SERVER_PORT,
   VIDEO_PATH_LOCAL,
+  MOVIES_DIR,
+  SERIES_DIR,
 } = process.env;
 import { USER_LOCATION } from "./common/AppServerConstant";
 
@@ -26,6 +28,8 @@ export default function config() {
     result.host = "localhost";
     result.videosPath = `${USER_LOCATION}/${VIDEO_PATH_LOCAL}`;
   }
+  result.moviesDir = MOVIES_DIR;
+  result.seriesDir = SERIES_DIR;
   result.baseLocation = USER_LOCATION;
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
   return result;

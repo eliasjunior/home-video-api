@@ -18,13 +18,13 @@ export function sendError({ response, statusCode, message, error = {} }) {
 }
 
 //TODO need ability to inject readFile
-export function imgProvider({ id, name, img }) {
+export function imgProvider({ id, name, img, folder }) {
   let binImg = readFile({
-    absolutePath: getImgPath({ fileName: name, img, id }),
+    absolutePath: getImgPath({ fileName: name, img, id, folder }),
     encoding: "none",
     logError: false,
   });
- 
+
   if (binImg) {
     logD(`=== > img[${img}] found`);
     return binImg;
@@ -38,11 +38,11 @@ export function imgProvider({ id, name, img }) {
 
 // private functions
 
-function getImgPath({ fileName: name, id, img }) {
+function getImgPath({ fileName: name, id, img, folder }) {
   if (imgFolderFallBack && name.includes(IMG_FALLBACK)) {
     const imgTemp = name.slice(0, name.length - FILE_EXT_INDEX).concat(".jpg");
     return `${imgFolderFallBack}/${id}/${imgTemp}`;
   } else {
-    return `${videosPath}/${id}/${img}`;
+    return `${videosPath}/${folder}/${id}/${img}`;
   }
 }

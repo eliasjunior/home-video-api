@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import fs from "fs";
 import path from "path";
-import { logE } from "../common/MessageUtil";
+import { logE, logD } from "../common/MessageUtil";
 import { DEFAULT_ENCONDING } from "../common/AppServerConstant";
 
 export default function FileLib() {
@@ -18,9 +18,9 @@ export default function FileLib() {
       try {
         return fs.readdirSync(folderLocation, { withFileTypes: true });
       } catch (err) {
-        console.error("Unable to scan directory: " + err);
+        logE("Unable to scan directory: " + err);
+        logD(`No directories found into ${folderLocation}`);
       }
-      console.warn(`No directories found into ${folderLocation}`);
       return [];
     },
     readFile: function (fileUrl, encoding = DEFAULT_ENCONDING) {

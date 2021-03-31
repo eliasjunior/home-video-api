@@ -5,23 +5,30 @@ import {
   IMG_FALLBACK,
 } from "../common/AppServerConstant";
 
-export function mapMedia(fileNameList, folderName, fileExtEqual) {
-  const name = fileNameList
-    .filter((name) => {
-      const fileExt = fileExtEqual(name);
-      return VIDEO_FORMATS.includes(fileExt);
-    })
-    .pop();
+export function mapMedia({
+  files,
+  folderName,
+  fileExtEqual,
+  isFolder = false,
+}) {
+  const name = isFolder
+    ? folderName
+    : files
+        .filter((name) => {
+          const fileExt = fileExtEqual(name);
+          return VIDEO_FORMATS.includes(fileExt);
+        })
+        .pop();
 
-  const sub = fileNameList
+  const sub = files
     .filter((name) => {
       const fileExt = fileExtEqual(name);
 
       return SUB_FORMATS.includes(fileExt);
     })
     .pop();
- 
-  const img = fileNameList
+
+  const img = files
     .filter((name) => {
       const fileExt = fileExtEqual(name);
       return IMG_FORMATS.includes(fileExt);
