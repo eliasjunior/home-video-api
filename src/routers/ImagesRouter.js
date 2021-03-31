@@ -13,7 +13,6 @@ function getImgFromSeries(req, response) {
   const { id } = req.params;
 
   const seriesMap = getSeriesMap();
-  console.log(">>>>> >> >> ", seriesMap);
   const { name, img } = seriesMap.byId[id];
 
   let binImg = imgProvider({ id, name, img, folder: seriesDir });

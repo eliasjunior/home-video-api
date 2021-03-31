@@ -12,26 +12,38 @@ import {
   getStartEndBytes,
 } from "../common/StreamingUtil";
 import config from "../config";
-import { setMovieMap, getMovieMap, setSeriesMap } from "../common/Util";
+import {
+  setMovieMap,
+  getMovieMap,
+  setSeriesMap,
+  getSeriesMap,
+} from "../common/Util";
 import { sendError } from "./RouterUtil";
 const { videosPath, moviesDir, seriesDir } = config();
 
+const moviesAbsPath = `${videosPath}/${moviesDir}`;
+const seriesAbsPath = `${videosPath}/${seriesDir}`;
+
 const { createStream } = StreamingData;
-const { getVideos, getFileDirInfo, getSeries } = DataAccess;
+const { getVideos, getFileDirInfo, getSeries, getVideo } = DataAccess;
 const router = express.Router();
 
 router.get("/", redirectMovies);
 router.get("/videos", loadMovies);
-router.get("/series", loadSeries);
 router.get("/videos/:id", loadMovie);
 router.get("/videos/:folder/:fileName", streamingVideo);
+
+router.get("/series", loadSeries);
+router.get("/series/:id", loadShow);
+router.get("/series/:parent/:folder/:fileName", streamingShow);
+
 
 function redirectMovies(_, res) {
   res.redirect("/videos");
 }
 function loadMovies(_, response) {
   try {
-    const videos = getVideos({ baseLocation: `${videosPath}/${moviesDir}` });
+    const videos = getVideos({ baseLocation: `${moviesAbsPath}` });
 
     if (videos.allIds.length === 0) {
       sendError({
@@ -49,7 +61,7 @@ function loadMovies(_, response) {
         { byId: {}, allIds: [] }
       );
       setMovieMap(tempMap);
-  
+
       flushJSON(response, videos);
     }
   } catch (error) {
@@ -63,33 +75,66 @@ function loadMovies(_, response) {
 }
 function loadSeries(_, response) {
   try {
-  const folders = getSeries({ baseLocation: `${videosPath}/${seriesDir}` });
-  const tempMap = folders.allIds.reduce(
-    (prev, id) => {
-      prev.byId[id] = folders.byId[id];
-      prev.allIds.push(id);
-      return prev;
-    },
-    { byId: {}, allIds: [] }
-  );
-  setSeriesMap(tempMap);
-  flushJSON(response, folders);
-} catch (error) {
-  sendError({
-    response,
-    message: "Attempt to load series has failed",
-    statusCode: 500,
-    error,
-  });
-}
+    const folders = getSeries({ baseLocation: `${videosPath}/${seriesDir}` });
+    const tempMap = folders.allIds.reduce(
+      (prev, id) => {
+        prev.byId[id] = folders.byId[id];
+        prev.allIds.push(id);
+        return prev;
+      },
+      { byId: {}, allIds: [] }
+    );
+    setSeriesMap(tempMap);
+    flushJSON(response, folders);
+  } catch (error) {
+    sendError({
+      response,
+      message: "Attempt to load series has failed",
+      statusCode: 500,
+      error,
+    });
+  }
 }
 function loadMovie(req, response) {
-  const { id } = req.params;
-  const MovieMap = getMovieMap();
-  if (MovieMap.allIds.length === 0) {
+  const { id, isSeries } = req.params;
+  let movieMap;
+  let seriesMap;
+  if (isSeries) {
+    seriesMap = getSeriesMap();
+  } else {
+    movieMap = getMovieMap();
+  }
+
+  const sendError = () => {
+    logE(`Attempting to get a video in memory id ${id} has failed`);
+    sendError({
+      response,
+      message:
+        "Something went wrong, file in memory resource not fully implemented or id does not exist",
+      statusCode: 501,
+    });
+  };
+
+  if (movieMap.allIds.length === 0) {
     //TODO do it later, in case the map empty need to call getVideos
   }
-  if (!MovieMap.byId[id]) {
+  if (isSeries) {
+    if (!seriesMap.byId[id]) {
+      sendError();
+    } else {
+      flushJSON(response, movieMap.byId[id]);
+    }
+  } else if (!movieMap.byId[id]) {
+    sendError();
+  } else {
+    flushJSON(response, movieMap.byId[id]);
+  }
+}
+function loadShow(req, response) {
+  const { id } = req.params;
+  const show = getVideo({ baseLocation: seriesAbsPath, folderName: id });
+
+  if (!show) {
     logE(`Attempting to get a video in memory id ${id} has failed`);
     sendError({
       response,
@@ -98,14 +143,25 @@ function loadMovie(req, response) {
       statusCode: 501,
     });
   } else {
-    flushJSON(response, MovieMap.byId[id]);
+    flushJSON(response, show);
   }
 }
 function streamingVideo(request, response) {
   const { folder, fileName } = request.params;
-  const { range } = request.headers;
-  const fileAbsPath = `${videosPath}/${folder}/${fileName}`;
+  const fileAbsPath = `${moviesAbsPath}/${folder}/${fileName}`;
+  doStreaming({ request, response, fileAbsPath });
+}
 
+function streamingShow(request, response) {
+  const { folder, fileName, parent } = request.params;
+  const fileAbsPath = `${seriesAbsPath}/${parent}/${folder}/${fileName}`;
+  doStreaming({ request, response, fileAbsPath });
+}
+
+// private functions
+
+function doStreaming({ fileAbsPath, request, response }) {
+  const { range } = request.headers;
   try {
     const statInfo = getFileDirInfo(fileAbsPath);
     const { size } = statInfo;
@@ -146,8 +202,6 @@ function streamingVideo(request, response) {
     });
   }
 }
-
-// private functions
 
 function flushJSON(response, videos) {
   response.status(SUCCESS_STATUS).json(videos).end();

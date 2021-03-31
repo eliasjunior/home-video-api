@@ -23,7 +23,6 @@ export function mapMedia({
   const sub = files
     .filter((name) => {
       const fileExt = fileExtEqual(name);
-
       return SUB_FORMATS.includes(fileExt);
     })
     .pop();

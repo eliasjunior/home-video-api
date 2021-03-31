@@ -10,7 +10,13 @@ import { logD, logE } from "../common/MessageUtil";
 import { DEFAULT_ENCONDING } from "../common/AppServerConstant";
 
 export default function FileUseCase({ FileApi }) {
-  const { readDirectory, isDirExist, fileExtEqual, readFile } = FileApi;
+  const {
+    readDirectory,
+    isDirExist,
+    fileExtEqual,
+    readFile,
+    readFileInfo,
+  } = FileApi;
   const loadFiles = (folderName, baseLocation) =>
     getFilesFolder(`${baseLocation}/${folderName}`, readDirectory);
   const getValidFileList = (folderName, baseLocation) => {
@@ -40,14 +46,33 @@ export default function FileUseCase({ FileApi }) {
       });
       return allFolders.reduce(
         (prev, folderName) => {
-          const files = getValidFileList(folderName, baseLocation)
-          const media = mapMedia({files, folderName, fileExtEqual, isFolder: true});
+          const files = getValidFileList(folderName, baseLocation);
+          const media = mapMedia({
+            files,
+            folderName,
+            fileExtEqual,
+            isFolder: true,
+          });
+          media.fileIds = loadFiles(folderName, baseLocation).filter((file) =>
+            readFileInfo(
+              baseLocation + "/" + folderName + "/" + file
+            ).isDirectory()
+          );
           prev.byId[folderName] = media;
           prev.allIds.push(folderName);
           return prev;
         },
         { byId: {}, allIds: [] }
       );
+    },
+    getVideo: function ({ baseLocation, folderName }) {
+      //TODO validate folderName
+      const parentFolder = folderName.split("__")[0];
+      const childFolder = folderName.split("__")[1];
+      const files = loadFiles(`${parentFolder}/${childFolder}`, baseLocation);
+      const media = mapMedia({ files, folderName: childFolder, fileExtEqual });
+      media.parentId = parentFolder;
+      return media;
     },
     //TODO need test for this one
     getVideos: function ({ baseLocation }) {
@@ -57,7 +82,7 @@ export default function FileUseCase({ FileApi }) {
         verifyingOrphanFiles(baseLocation, { readDirectory, fileExtEqual });
         // get all folders including the ones that does not have video
         const allFolders = getFolderName(baseLocation, { readDirectory });
-        
+
         const onlyFolderWithValidFiles = (folderName) =>
           getValidFileList(folderName, baseLocation).length > 0;
         // reuse getValidFileList for the files in the folder
@@ -67,7 +92,7 @@ export default function FileUseCase({ FileApi }) {
           ).length > 0;
         const buildUpFoldersTable = (prev, folderName) => {
           const files = loadFiles(folderName, baseLocation);
-          const media = mapMedia({files, folderName, fileExtEqual});
+          const media = mapMedia({ files, folderName, fileExtEqual });
           prev.byId[folderName] = media;
           prev.allIds.push(media.id);
           return prev;

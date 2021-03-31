@@ -43,6 +43,7 @@ export function verifyingOrphanFiles(
             sub ext[${permittedSubExtStr()}] without a parent in ${baseLocation}`);
   }
 }
+// only the file name, not the object file
 export function getFilesFolder(folderName, readDirectory) {
   try {
     const fileOrFolder = readDirectory(folderName);
