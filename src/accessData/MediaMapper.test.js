@@ -8,7 +8,11 @@ describe("MediaMapper", ()=> {
         const fileExtEqual = (fileName) => {
             return path.extname(fileName).toLowerCase();
         }
-        const objMedia = mapMedia(fileList, "some", fileExtEqual)
+        const objMedia = mapMedia({
+          files: fileList,
+          folderName: "some",
+          fileExtEqual,
+        });
         const expected = {
           name: "myMovie.mp4",
           sub: "myMovie.srt",
