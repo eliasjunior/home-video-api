@@ -1,5 +1,5 @@
 import fs from "fs";
-import { logE } from "../common/MessageUtil";
+import { logE } from "../../common/MessageUtil";
 
 export default {
   createStream: function ({ fileAbsPath, start, end }) {

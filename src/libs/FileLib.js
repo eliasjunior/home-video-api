@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { logE, logD } from "../common/MessageUtil";
-import { DEFAULT_ENCONDING } from "../common/AppServerConstant";
+import { DEFAULT_ENCODING } from "../common/AppServerConstant";
 
 export default function FileLib() {
   return {
@@ -23,7 +23,7 @@ export default function FileLib() {
       }
       return [];
     },
-    readFile: function (fileUrl, encoding = DEFAULT_ENCONDING) {
+    readFile: function (fileUrl, encoding = DEFAULT_ENCODING) {
       try {
         if (encoding === "none") {
           return fs.readFileSync(fileUrl);
@@ -39,7 +39,7 @@ export default function FileLib() {
         fs.accessSync(folderPath, fs.constants.R_OK | fs.constants.F_OK);
         return true;
       } catch (err) {
-        logE(`${folderPath} does not exist`, err);
+        logE(`${folderPath} does not exist or cannot access it`, err);
         return false;
       }
     },

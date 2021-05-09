@@ -1,7 +1,7 @@
 import express from "express";
 import { logE } from "../common/MessageUtil";
-import DataAccess from "../accessData";
-import StreamingData from "../streamingData";
+import DataAccess from "../domain/fileUseCases";
+import StreamingData from "../domain/streamingUseCases";
 import {
   SUCCESS_STATUS,
   PARTIAL_CONTENT_STATUS,
@@ -10,7 +10,7 @@ import {
   getHeaderStream,
   streamEvents,
   getStartEndBytes,
-} from "../common/StreamingUtil";
+} from "../domain/streamingUseCases/StreamingUtilUseCase";
 import config from "../config";
 import {
   setMovieMap,

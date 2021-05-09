@@ -2,9 +2,9 @@ import express from "express";
 import { logE } from "../common/MessageUtil";
 const router = express.Router();
 import config from "../config";
-import dataAccess from "../accessData";
-import StreamingData from "../streamingData";
-import { streamEvents } from "../common/StreamingUtil";
+import fileUseCases from "../domain/fileUseCases";
+import streamingUseCases from "../domain/streamingUseCases";
+import { streamEvents } from "../domain/streamingUseCases/StreamingUtilUseCase";
 import subsrt from "subsrt";
 import { sendError } from "./RouterUtil";
 
@@ -12,8 +12,8 @@ const { videosPath, moviesDir, seriesDir } = config();
 const moviesAbsPath = `${videosPath}/${moviesDir}`;
 const seriesAbsPath = `${videosPath}/${seriesDir}`;
 
-const { getFileExt, readFile } = dataAccess;
-const { createStream } = StreamingData;
+const { getFileExt, readFile } = fileUseCases;
+const { createStream } = streamingUseCases;
 
 router.get("/captions/:folder/:fileName", getCaption);
 router.get("/captions/:parent/:folder/:fileName", getCaptionShow);

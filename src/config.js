@@ -1,11 +1,11 @@
 require("dotenv").config();
 const {
   SERVER_HOST,
+  SERVER_PORT,
   NODE_ENV,
   IMG_FOLDER_FALL_BACK,
   VIDEO_PATH,
   SERVER_PROTOCOL,
-  SERVER_PORT,
   VIDEO_PATH_LOCAL,
   MOVIES_DIR,
   SERIES_DIR,
@@ -16,7 +16,7 @@ export default function config() {
   const result = {};
   if (NODE_ENV === "production") {
     result.protocol = SERVER_PROTOCOL;
-    result.port = process.env.PORT || SERVER_PORT;
+    result.port = SERVER_PORT;
     result.host = SERVER_HOST;
     // in case you want read the images/posters from the another folder.
     result.imgFolderFallBack = IMG_FOLDER_FALL_BACK;

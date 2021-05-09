@@ -3,7 +3,7 @@ import {
   SUB_FORMATS,
   IMG_FORMATS,
   IMG_FALLBACK,
-} from "../common/AppServerConstant";
+} from "../../common/AppServerConstant";
 
 export function mapMedia({
   files,

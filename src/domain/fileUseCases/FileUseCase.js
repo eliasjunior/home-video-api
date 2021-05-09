@@ -4,10 +4,10 @@ import {
   filterValidFiles,
   getFolderName,
   isThereVideoFile,
-} from "./FileHelper";
+} from "./FileHelperUseCase";
 import { mapMedia } from "./MediaMapper";
-import { logD, logE } from "../common/MessageUtil";
-import { DEFAULT_ENCONDING } from "../common/AppServerConstant";
+import { logD, logE } from "../../common/MessageUtil";
+import { DEFAULT_ENCODING } from "../../common/AppServerConstant";
 
 export default function FileUseCase({ FileApi }) {
   const {
@@ -32,7 +32,7 @@ export default function FileUseCase({ FileApi }) {
         throw error;
       }
     },
-    readFile({ absolutePath, encoding = DEFAULT_ENCONDING, logError = true }) {
+    readFile({ absolutePath, encoding = DEFAULT_ENCODING, logError = true }) {
       try {
         return readFile(absolutePath, encoding);
       } catch (err) {

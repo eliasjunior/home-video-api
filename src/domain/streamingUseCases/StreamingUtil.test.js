@@ -1,5 +1,5 @@
-const { BASE_STREAM_CALC, EXPONENT } = require("./AppServerConstant");
-const { getStartEndBytes, getHeaderStream } = require("./StreamingUtil");
+const { BASE_STREAM_CALC, EXPONENT } = require("../../common/AppServerConstant");
+const { getStartEndBytes, getHeaderStream } = require("./StreamingUtilUseCase");
 
 describe('VideoStreamingService', () => {
     it("should get start, end position from head range 0", () => {

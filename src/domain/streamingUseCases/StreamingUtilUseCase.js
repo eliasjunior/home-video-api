@@ -1,11 +1,11 @@
-const { logD } = require("./MessageUtil");
+const { logD } = require("../../common/MessageUtil");
 import {
   BASE_STREAM_CALC,
   EXPONENT,
   INTERNAL_SERVER_ERROR,
   SUCCESS_STATUS,
-} from "./AppServerConstant";
-import { requiredParameter } from "./Util";
+} from "../../common/AppServerConstant";
+import { requiredParameter } from "../../common/Util";
 
 export function streamEvents({
   readStream = requiredParameter("stream"),

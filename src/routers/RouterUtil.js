@@ -1,7 +1,7 @@
 const FILE_EXT_INDEX = 4;
 import config from "../config";
 const { imgFolderFallBack, videosPath } = config();
-import UtilFile from "../accessData";
+import UtilFile from "../domain/fileUseCases";
 const { readFile } = UtilFile;
 import { logD } from "../common/MessageUtil";
 const { PWD } = process.env;
