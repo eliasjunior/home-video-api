@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # just using as reference of running command at the moment
-docker build --tag home-video-api . 
+docker build --tag nodeapi . 

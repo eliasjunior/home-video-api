@@ -1,10 +1,9 @@
 FROM node:15 as build-node15-img
-ENV NODE_ENV=production
+# ENV NODE_ENV=${ENV}  
 WORKDIR /app
-COPY ["package.json", "package-lock.json", "./"]
+COPY package*.json ./
 
-USER eliasjunior
-RUN npm install --production
+RUN npm install --only=production
 COPY . . 
 EXPOSE 8080
 ENTRYPOINT [ "npm", "run", "debugP" ]

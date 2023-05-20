@@ -14,6 +14,7 @@ import { USER_LOCATION } from "./common/AppServerConstant";
 
 export default function config() {
   const result = {};
+  console.log(`NODE_ENV: ${NODE_ENV}`);
   if (NODE_ENV === "production") {
     result.protocol = SERVER_PROTOCOL;
     result.port = SERVER_PORT;
