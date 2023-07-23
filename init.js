@@ -1,2 +1,2 @@
-// the entry file
-import server from './server.js';
+// the entry file, it's being used
+import server from "./server.js";

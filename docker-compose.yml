@@ -6,9 +6,10 @@ services:
       args:
       - APP_USER=eliasjunior  # or APP_USER=nginx for production 
     environment:
-      NODE_ENV: ${NODE_ENV}
+      - NODE_OPTIONS=--max-old-space-size=4096
     ports:
       - "8080:8080"
+    command: "node --max-old-space-size=4096 init.js"  
     
   reactimg:
     build:
