@@ -26,7 +26,6 @@ app.listen(port, () => {
   console.log(`Movies folder: ${moviesDir}`);
   console.log(`baseLocation: ${baseLocation}`);
 });
-printMemoryUsage();
 // Function to print memory usage statistics
 function printMemoryUsage() {
   console.log("NODE_OPT", process.env.NODE_OPTIONS);
@@ -39,4 +38,4 @@ function printMemoryUsage() {
 }
 
 // Call the function periodically to print memory usage statistics
-setInterval(printMemoryUsage, 10000); // Print every 5 seconds (adjust as needed)
+//setInterval(printMemoryUsage, 10000); // Print every 5 seconds (adjust as needed)
