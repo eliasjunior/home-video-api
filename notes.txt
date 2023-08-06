@@ -7,3 +7,11 @@ docker compose up
   see .env
 
 Passing to react app did not work, I guess only via .env(in the react project) starting with "REACT_APP"   
+
+
+scripts to start service on Pi 
+script to start both servers 
+`/usr/local/bin/start-home-video-api.sh`
+then restart service
+sudo systemctl stop start-home-video-api.service
+sudo systemctl start start-home-video-api.service

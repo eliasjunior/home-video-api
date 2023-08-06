@@ -46,12 +46,13 @@ export default function FileLib() {
     fileExtEqual: function (fileName) {
       return path.extname(fileName).toLowerCase();
     },
-    readJson: function (fileUrl) {
+    readJson: function (data) {
       try {
-        const jsonObject = JSON.parse(this.readFile(fileUrl));
-        console.log("Parsed JSON object:", jsonObject);
+        const jsonObject = JSON.parse(data);
+        logD("Parsed JSON object:", jsonObject);
+        return jsonObject;
       } catch (parseError) {
-        console.error("Error parsing JSON:", parseError);
+        logE("Error parsing JSON:", parseError);
       }
     },
   };

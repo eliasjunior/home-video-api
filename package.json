@@ -6,9 +6,8 @@
   "scripts": {
     "test": "jest",
     "start": "NODE_ENV=production babel-node init.js",
-    "dev": "NODE_ENV=development nodemon --exec babel-node init.js",
+    "dev": "showdebug=true NODE_ENV=development nodemon --exec babel-node init.js",
     "debugP": "NODE_ENV=production showdebug=true babel-node init.js",
-    "debugD": "showdebug=true nodemon --exec babel-node init.js",
     "express": "^4.16.4"
   },
   "repository": {
@@ -22,15 +21,15 @@
   },
   "homepage": "https://github.com/eliasjunior/home-video-server#readme",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.4",
-    "subsrt": "^1.1.1",
     "@babel/cli": "^7.12.16",
     "@babel/core": "^7.12.16",
     "@babel/node": "^7.12.16",
     "@babel/preset-env": "^7.12.16",
-    "nodemon": "^1.18.9"
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.4",
+    "nodemon": "^1.18.9",
+    "subsrt": "^1.1.1"
   },
   "devDependencies": {
     "eslint": "^7.20.0",

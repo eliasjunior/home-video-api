@@ -33,3 +33,14 @@ export function removeSpecialCharacters(inputString) {
   return inputString.replace(/[^a-zA-Z0-9]/g, "");
 }
 
+export function getImageUrl(folderName, MOVIE_MAP, IMAGE_SERVER_URL) {
+  const rawFolderName = removeSpecialCharacters(folderName).toLowerCase();
+  const obgImg = MOVIE_MAP[rawFolderName];
+  if (!obgImg) {
+    return "";
+  }
+  const { folder, imgName } = obgImg;
+  return `${IMAGE_SERVER_URL}/${folder}/${imgName}`;
+}
+
+

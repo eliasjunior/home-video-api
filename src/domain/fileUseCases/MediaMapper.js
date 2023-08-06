@@ -1,13 +1,14 @@
 import {
   VIDEO_FORMATS,
   SUB_FORMATS,
-  IMG_FORMATS,
   IMAGE_FALLBACK_URL,
+  IMG_FORMATS,
   IMAGE_SERVER_URL,
   MOVIE_MAP,
 } from "../../common/AppServerConstant";
 
-import { removeSpecialCharacters } from "../../common/Util";
+import { logD } from "../../common/MessageUtil";
+import { getImageUrl } from "../../common/Util";
 
 export function mapMedia({
   files,
@@ -15,7 +16,7 @@ export function mapMedia({
   fileExtEqual,
   isFolder = false,
 }) {
-  console.log(IMAGE_FALLBACK_URL);
+  logD(IMAGE_FALLBACK_URL);
   const name = isFolder
     ? folderName
     : files
@@ -32,8 +33,7 @@ export function mapMedia({
     })
     .pop();
 
-  const img = getImageUrl(folderName, files, fileExtEqual);
-
+  const img = getImageUrlHelper(folderName, files, fileExtEqual);
   return {
     name,
     sub,
@@ -43,22 +43,18 @@ export function mapMedia({
   };
 }
 
-// private functions
-function getImageUrl(folderName, files, fileExtEqual) {
-  const rawFolderName = removeSpecialCharacters(folderName).toLowerCase();
-  const obgImg = MOVIE_MAP[rawFolderName];
-  if (obgImg) {
-    const { folder, imgName } = obgImg;
-    return `${IMAGE_SERVER_URL}/${folder}/${imgName};
-    }`;
-  } else {
-    const img = files
-      .filter((name) => {
-        const fileExt = fileExtEqual(name);
-        return IMG_FORMATS.includes(fileExt);
-      })
-      .pop();
-    return img ? img : IMAGE_FALLBACK_URL;
+export function getImageUrlHelper(folderName, files, fileExtEqual) {
+  const url = getImageUrl(folderName, MOVIE_MAP, IMAGE_SERVER_URL);
+  if (url != "") {
+    return url;
   }
+  const img = files
+    .filter((name) => {
+      const fileExt = fileExtEqual(name);
+      return IMG_FORMATS.includes(fileExt);
+    })
+    .pop();
+  return img ? img : IMAGE_FALLBACK_URL;
 }
+
 

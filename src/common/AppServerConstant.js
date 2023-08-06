@@ -14,12 +14,5 @@ export const EXPONENT = 7;
 export const IMAGE_RESOURCE = `images`;
 export const IMAGE_FALLBACK_URL = `http://${imageServerUrl}:${imagePort}/${IMAGE_RESOURCE}/${IMG_FALLBACK}`;
 export const IMAGE_SERVER_URL = `http://${imageServerUrl}:${imagePort}/${IMAGE_RESOURCE}`;
-// export const MOVIE_MAP = {
-//   predator1987: {
-//     folder: "predator",
-//     imgName: "predator.jpg",
-//     year: "1987",
-//   },
-// };
 export const MOVIE_MAP = movieMap; 
 
