@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "start": "babel-node init.js",
-    "dev": "nodemon --exec babel-node init.js",
-    "debugP": "showdebug=true babel-node init.js",
+    "start": "NODE_ENV=production babel-node init.js",
+    "dev": "NODE_ENV=development nodemon --exec babel-node init.js",
+    "debugP": "NODE_ENV=production showdebug=true babel-node init.js",
     "debugD": "showdebug=true nodemon --exec babel-node init.js",
     "express": "^4.16.4"
   },

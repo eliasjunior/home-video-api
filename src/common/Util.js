@@ -26,3 +26,10 @@ export function requiredParameter(name, isThrow = true) {
   }
 }
 
+export function removeSpecialCharacters(inputString) {
+  if (!inputString) {
+    return "";
+  }
+  return inputString.replace(/[^a-zA-Z0-9]/g, "");
+}
+
