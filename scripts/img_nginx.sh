@@ -11,13 +11,17 @@ folder_name="$1"
 new_file_name="$2"
 image_url="$3"
 
+# base dir
+parentFolder="/var/www/images"
+fullPath="$parentFolder/$folder_name"
+
 # Create the folder if it doesn't exist
-if [ ! -d "$folder_name" ]; then
-    mkdir "$folder_name"
+if [ ! -d "$fullPath" ]; then
+    mkdir "$fullPath"
 fi
 
 # Change to the folder
-cd "$folder_name"
+cd "$fullPath"
 
 # Download the image file using wget
 wget -O "$new_file_name" "$image_url"
