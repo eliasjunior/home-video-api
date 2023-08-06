@@ -10,8 +10,8 @@
     "year": "2006"
   },
   "12yearsaslave20131080p": {
-    "folder": "",
-    "imgName": ".jpg",
+    "folder": "twelve_years",
+    "imgName": "twelve.jpg",
     "year": ""
   },
   "191720191080pbluray51ytsmx": {
@@ -28,5 +28,65 @@
     "folder": "time_to_kill",
     "imgName": "timetokill.jpg",
     "year": ""
+  },
+  "aliendc19791080p": {
+    "folder": "alien1979",
+    "imgName": "alien.jpg",
+    "year": "1979"
+  },
+  "antman20151080px264dd51ennlsubs": {
+    "folder": "antman1",
+    "imgName": "antman.jpg",
+    "year": ""
+  },
+  "arrival2016720pfoxmto": {
+    "folder": "arrival",
+    "imgName": "arrival.jpg",
+    "year": ""
+  },
+  "avengersinfinitywar2018bluray720pytsam": {
+    "folder": "infinity_war",
+    "imgName": "avengers.jpg",
+    "year": ""
+  },
+  "batmanbegins20051080p": {
+    "folder": "batman_begins",
+    "imgName": "batman.jpg",
+    "year": "2005"
+  },
+  "beowulf20071080p": {
+    "folder": "beowulf",
+    "imgName": "beowulf.jpg",
+    "year": ""
+  },
+  "blackpanther2018bluray1080pytsam": {
+    "folder": "black_panther",
+    "imgName": "black_panther.jpg",
+    "year": "2018"
+  },
+  "bigtroubleinlittlechina": {
+    "folder": "big_trouble",
+    "imgName": "big_trouble.jpg",
+    "year": "1986"
+  },
+  "bladerunner2049hdripxvidac3evo": {
+    "folder": "bladerunner2049",
+    "imgName": "bladerunner.jpg",
+    "year": ""
+  },
+  "bladerunner1997": {
+    "folder": "bladerunner",
+    "imgName": "bladerunner.jpg",
+    "year": ""
+  },
+  "bloodsport19881080p": {
+    "folder": "bloodsport",
+    "imgName": "dragao.jpg",
+    "year": ""
+  },
+  "braveheart19951080": {
+    "folder": "braveheart",
+    "imgName": "braveheart.jpg",
+    "year": "1995"
   }
 }
