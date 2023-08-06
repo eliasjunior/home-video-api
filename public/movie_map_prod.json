@@ -3,5 +3,10 @@
     "folder": "predator",
     "imgName": "predator.jpg",
     "year": "1987"
+  },
+  "cars2006": {
+    "folder": "car1",
+    "imgName": "car2006.jpg",
+    "year": "2006"
   }
 }
