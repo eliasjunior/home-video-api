@@ -30,3 +30,7 @@ sudo apt-get install nginx
 images are `/var/www/images`
 config is
 sudo nano /etc/nginx/sites-available/default
+
+// task create folder with images
+- read the list of movie's name
+- wget 

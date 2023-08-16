@@ -88,5 +88,10 @@
     "folder": "braveheart",
     "imgName": "braveheart.jpg",
     "year": "1995"
+  },
+  "conanthedestroyerhd720p": {
+    "folder": "conan_destroyer",
+    "imgName": "conan.jpg",
+    "year": "1995"
   }
 }

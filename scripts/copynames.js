@@ -1126,8 +1126,28 @@ const list = {
 
 const res = list.allIds.map((v) => removeSpecialCharacters(v).toLowerCase());
 
-console.log(res);
+console.log(res.length);
 
 function removeSpecialCharacters(inputString) {
   return inputString.replace(/[^a-zA-Z0-9]/g, "");
+}
+
+writeToFile(res);
+
+function writeToFile(stringArray) {
+  const fs = require("fs");
+  // File path
+  const filePath = "movies_names.txt";
+
+  try {
+    // Join the array of strings with new line characters
+    const content = stringArray.join("\n");
+
+    // Write the content to the file synchronously
+    fs.writeFileSync(filePath, content);
+
+    console.log("File written successfully.");
+  } catch (error) {
+    console.error("An error occurred:", error.message);
+  }
 }
