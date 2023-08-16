@@ -34,3 +34,10 @@ sudo nano /etc/nginx/sites-available/default
 // task create folder with images
 - read the list of movie's name
 - wget 
+OBS: changes to add new image to cumbersome
+- change map
+- create folder
+- download image
+- pull change code from map changes reflect
+- stop all node services(back and front)
+- restart using /usr/local/bin/start-home-video-api.sh
