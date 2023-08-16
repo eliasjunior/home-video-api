@@ -6,16 +6,16 @@ if [ $# -ne 3 ]; then
     exit 1
 fi
 
-item="$1"
+item=$(echo "$1" | tr -cd '[:alnum:] ' | tr '[:upper:]' '[:lower:]')
 folder="$2"
 name="$3"
-backup_dir="${~}"
+backup_dir=~
 
 # JSON structure to be added
 new_item="\"${item}\": {\"folder\": \"$folder\", \"name\": \"$name\", \"year\": \"\"}"
 
 # JSON file path
-json_file="../public/movie_map_test.json"
+json_file="../public/movie_map_prod.json"
 
 # Check if the JSON file exists
 if [ ! -f "$json_file" ]; then
@@ -39,3 +39,4 @@ echo "New item added to $json_file"
 
 cp -f "${json_file}" ~
 echo "backup map to " ~
+echo "NEXT:=>wget -O url image_name"
