@@ -1,3 +1,5 @@
+when testing with front-end images is broken at the moment.
+
 - docker compose, it seems to be able to see changes locally I need to delete the image 
 - there is no build for this app, docker compose will build it
 - docker compose is the V2 and does not accept passing vars on the command line, at least at the date writing here
