@@ -4,10 +4,11 @@ import cors from "cors";
 import VideosRouter from "./src/routers/VideosRouter";
 import ImagesRouter from "./src/routers/ImagesRouter";
 import CaptionsRouter from "./src/routers/CaptionsRouter";
-import config from "./src/config";
-const { serverUrl, port, moviesDir, baseLocation } = config();
-
+import { config } from "./src/common/AppServerConstant";
+import { logD } from "./src/common/MessageUtil";
+import { loadRemoteJsonFile } from "./src/libs/HttpLib";
 import path from "path";
+import { setMoviesMap } from "./src/libs/MemoryLib";
 
 let app = express();
 
@@ -20,22 +21,25 @@ app.use("/", VideosRouter);
 app.use("/", ImagesRouter);
 app.use("/", CaptionsRouter);
 
-app.listen(port, () => {
-  console.log(`Application started, ${serverUrl}`);
+app.listen(config.port, async () => {
+  console.log(`Application started, ${config.serverUrl}`);
   console.log(`App config`);
-  console.log(`Movies folder: ${moviesDir}`);
-  console.log(`baseLocation: ${baseLocation}`);
+  console.log(`Movies folder: ${config.moviesDir}`);
+  console.log(`baseLocation: ${config.baseLocation}`);
+
+  const jsonUrl = `${config.protocol}://${config.imageServerHost}:${config.imagePort}/json/${config.imageMapFileName}`;
+  logD("jsonUrl=>", jsonUrl);
+  const moviesMap = await fetchAndLogJsonData(jsonUrl);
+  logD("moviesMap=", moviesMap);
+  setMoviesMap(moviesMap);
 });
-// Function to print memory usage statistics
-function printMemoryUsage() {
-  console.log("NODE_OPT", process.env.NODE_OPTIONS);
 
-  const memoryUsage = process.memoryUsage();
-  const totalHeapSize = memoryUsage.heapTotal;
-  const totalHeapSizeMB = (totalHeapSize / 1024 / 1024).toFixed(2);
-
-  console.log(`Total Heap Size: ${totalHeapSizeMB} MB`);
+async function fetchAndLogJsonData(remoteJsonUrl) {
+  try {
+    return await loadRemoteJsonFile(remoteJsonUrl);
+  } catch (error) {
+    console.error(
+      `error to retrieve json map in ${remoteJsonUrl} \n ${error.message} \n only production has nginx set up`
+    );
+  }
 }
-
-// Call the function periodically to print memory usage statistics
-//setInterval(printMemoryUsage, 10000); // Print every 5 seconds (adjust as needed)

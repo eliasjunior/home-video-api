@@ -4,11 +4,14 @@ import {
   IMAGE_FALLBACK_URL,
   IMG_FORMATS,
   IMAGE_SERVER_URL,
-  MOVIE_MAP,
 } from "../../common/AppServerConstant";
 
 import { logD } from "../../common/MessageUtil";
 import { getImageUrl } from "../../common/Util";
+
+import { getMoviesMap } from "../../libs/MemoryLib";
+
+//TODO too much work to make this async, try to just load at server start up
 
 export function mapMedia({
   files,
@@ -16,7 +19,7 @@ export function mapMedia({
   fileExtEqual,
   isFolder = false,
 }) {
-  logD(IMAGE_FALLBACK_URL);
+  logD("IMAGE_FALLBACK_URL", IMAGE_FALLBACK_URL);
   const name = isFolder
     ? folderName
     : files
@@ -44,7 +47,9 @@ export function mapMedia({
 }
 
 export function getImageUrlHelper(folderName, files, fileExtEqual) {
-  const url = getImageUrl(folderName, MOVIE_MAP, IMAGE_SERVER_URL);
+  console.log("IMAGE_SERVER_URL", IMAGE_SERVER_URL);
+  const url = getImageUrl(folderName, getMoviesMap(), IMAGE_SERVER_URL);
+  logD("url image", url);
   if (url != "") {
     return url;
   }

@@ -8,6 +8,10 @@ export function logE(message, err) {
 export function logD(message, obj) {
   const { showdebug } = process.env;
   if (showdebug) {
-    console.log(message, obj);
+    if (obj) {
+      console.log(message, obj);
+    } else {
+      console.log(message);
+    }
   }
 }

@@ -10,13 +10,8 @@ import { logD, logE } from "../../common/MessageUtil";
 import { DEFAULT_ENCODING } from "../../common/AppServerConstant";
 
 export default function FileUseCase({ FileApi }) {
-  const {
-    readDirectory,
-    isDirExist,
-    fileExtEqual,
-    readFile,
-    readFileInfo,
-  } = FileApi;
+  const { readDirectory, isDirExist, fileExtEqual, readFile, readFileInfo } =
+    FileApi;
   const loadFiles = (folderName, baseLocation) =>
     getFilesFolder(`${baseLocation}/${folderName}`, readDirectory);
   const getValidFileList = (folderName, baseLocation) => {
@@ -40,7 +35,7 @@ export default function FileUseCase({ FileApi }) {
       }
     },
     getSeries: function ({ baseLocation }) {
-      console.info(`getSeries under === ${baseLocation} ===`);
+      logD(`getSeries under === ${baseLocation} ===`);
       const allFolders = getFolderName(baseLocation, {
         readDirectory,
       });
@@ -78,7 +73,7 @@ export default function FileUseCase({ FileApi }) {
     getVideos: function ({ baseLocation }) {
       //It just goes 1 level in the folder
       if (isDirExist(baseLocation)) {
-        console.info(`getVideos under *** ${baseLocation} ***`);
+        logD(`getVideos under *** ${baseLocation} ***`);
         verifyingOrphanFiles(baseLocation, { readDirectory, fileExtEqual });
         // get all folders including the ones that does not have video
         const allFolders = getFolderName(baseLocation, { readDirectory });

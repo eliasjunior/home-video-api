@@ -1,12 +1,8 @@
 const dotenv = require("dotenv");
 
-const path = require("path");
+
 import { logD } from "./common/MessageUtil";
 import { USER_LOCATION } from "./common/AppServerConstant";
-import FileApi from "./libs/FileLib";
-const { readJson, readFile } = FileApi();
-
-import { loadRemoteJsonFile } from "./libs/HttpLib";
 
 if (process.env.NODE_ENV === "development") {
   dotenv.config({ path: ".env.development" });
@@ -46,31 +42,13 @@ export default function config() {
   result.seriesDir = SERIES_DIR;
   result.baseLocation = USER_LOCATION;
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
-  result.imageServerUrl = IMAGES_HOST_SERVER;
+  //NGINX and it's not the images url in the AppServerConstant that has /images
+  result.imageServerHost = IMAGES_HOST_SERVER;
   result.imagePort = IMAGES_PORT_SERVER;
-
-  if (process.env.NODE_ENV !== "production") {
-    const mediaFileInfoPath = path.join(__dirname, "../public", IMAGE_MAP);
-    logD("mediaFileInfoPath=", mediaFileInfoPath);
-    result.movieMap = readJson(readFile(mediaFileInfoPath));
-  } else {
-    const jsonUrl = `${result.protocol}://${result.imageServerUrl}:${result.imagePort}/json/${IMAGE_MAP}`;
-    result.movieMap = fetchAndLogJsonData(jsonUrl);
-  }
+  result.imageMapFileName = IMAGE_MAP;
 
   logD("config result", result);
   return result;
 }
 
-async function fetchAndLogJsonData(remoteJsonUrl) {
-  try {
-    const jsonData = await loadRemoteJsonFile(remoteJsonUrl);
-    console.log(jsonData);
-    logD("jsonData=", jsonData);
-    return jsonData;
-  } catch (error) {
-    console.error(
-      `error to retrieve json map in ${remoteJsonUrl} \n ${error.message}`
-    );
-  }
-}
+

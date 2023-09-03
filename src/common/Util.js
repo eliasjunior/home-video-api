@@ -43,4 +43,12 @@ export function getImageUrl(folderName, MOVIE_MAP, IMAGE_SERVER_URL) {
   return `${IMAGE_SERVER_URL}/${folder}/${imgName}`;
 }
 
+export function printMemoryUsage() {
+  console.log("NODE_OPT", process.env.NODE_OPTIONS);
 
+  const memoryUsage = process.memoryUsage();
+  const totalHeapSize = memoryUsage.heapTotal;
+  const totalHeapSizeMB = (totalHeapSize / 1024 / 1024).toFixed(2);
+
+  console.log(`Total Heap Size: ${totalHeapSizeMB} MB`);
+}

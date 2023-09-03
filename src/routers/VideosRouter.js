@@ -1,17 +1,17 @@
 import express from "express";
-import { logE } from "../common/MessageUtil";
+import { logD, logE } from "../common/MessageUtil";
 import DataAccess from "../domain/fileUseCases";
 import StreamingData from "../domain/streamingUseCases";
 import {
   SUCCESS_STATUS,
   PARTIAL_CONTENT_STATUS,
+  config,
 } from "../common/AppServerConstant";
 import {
   getHeaderStream,
   streamEvents,
   getStartEndBytes,
 } from "../domain/streamingUseCases/StreamingUtilUseCase";
-import config from "../config";
 import {
   setMovieMap,
   getMovieMap,
@@ -19,10 +19,9 @@ import {
   getSeriesMap,
 } from "../common/Util";
 import { sendError } from "./RouterUtil";
-const { videosPath, moviesDir, seriesDir } = config();
 
-const moviesAbsPath = `${videosPath}/${moviesDir}`;
-const seriesAbsPath = `${videosPath}/${seriesDir}`;
+const moviesAbsPath = `${config.videosPath}/${config.moviesDir}`;
+const seriesAbsPath = `${config.videosPath}/${config.seriesDir}`;
 
 const { createStream } = StreamingData;
 const { getVideos, getFileDirInfo, getSeries, getVideo } = DataAccess;
@@ -37,7 +36,6 @@ router.get("/series", loadSeries);
 router.get("/series/:id", loadShow);
 router.get("/series/:parent/:folder/:fileName", streamingShow);
 
-
 function redirectMovies(_, res) {
   res.redirect("/videos");
 }
@@ -45,10 +43,11 @@ function loadMovies(_, response) {
   try {
     const videos = getVideos({ baseLocation: `${moviesAbsPath}` });
 
+    logD("videosPath=", config.videosPath);
     if (videos.allIds.length === 0) {
       sendError({
         response,
-        message: `No videos were found in the given location ${videosPath}`,
+        message: `No videos were found in the given location ${config.videosPath}`,
         statusCode: 500,
       });
     } else {
@@ -75,7 +74,9 @@ function loadMovies(_, response) {
 }
 function loadSeries(_, response) {
   try {
-    const folders = getSeries({ baseLocation: `${videosPath}/${seriesDir}` });
+    const folders = getSeries({
+      baseLocation: `${config.videosPath}/${config.seriesDir}`,
+    });
     const tempMap = folders.allIds.reduce(
       (prev, id) => {
         prev.byId[id] = folders.byId[id];
