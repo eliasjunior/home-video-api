@@ -1,3 +1,5 @@
+- image with encode url for many options are not possible copy and paste(see scripts/download_encode_img.sh)
+
 when testing with front-end images is broken at the moment.
 
 - docker compose, it seems to be able to see changes locally I need to delete the image 
@@ -32,6 +34,7 @@ sudo apt-get install nginx
 images are `/var/www/images`
 config is
 sudo nano /etc/nginx/sites-available/default
+json map is `/var/www/html/json/movie_map_prod.json`
 
 // task create folder with images
 - read the list of movie's name
