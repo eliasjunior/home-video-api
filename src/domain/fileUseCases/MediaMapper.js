@@ -47,7 +47,6 @@ export function mapMedia({
 }
 
 export function getImageUrlHelper(folderName, files, fileExtEqual) {
-  console.log("IMAGE_SERVER_URL", IMAGE_SERVER_URL);
   const url = getImageUrl(folderName, getMoviesMap(), IMAGE_SERVER_URL);
   logD("url image", url);
   if (url != "") {
