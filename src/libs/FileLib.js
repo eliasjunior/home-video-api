@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import fs from "fs";
 import path from "path";
 import { logE, logD } from "../common/MessageUtil";
@@ -8,11 +7,7 @@ export default function FileLib() {
   return {
     readFileInfo: function (fullPath) {
       //get file info, size
-      try {
-        return fs.statSync(`${fullPath}`);
-      } catch (err) {
-        throw err;
-      }
+      return fs.statSync(`${fullPath}`);
     },
     readDirectory: function (folderLocation) {
       try {
@@ -24,14 +19,10 @@ export default function FileLib() {
       return [];
     },
     readFile: function (fileUrl, encoding = DEFAULT_ENCODING) {
-      try {
-        if (encoding === "none") {
-          return fs.readFileSync(fileUrl);
-        } else {
-          return fs.readFileSync(fileUrl, encoding);
-        }
-      } catch (err) {
-        throw err;
+      if (encoding === "none") {
+        return fs.readFileSync(fileUrl);
+      } else {
+        return fs.readFileSync(fileUrl, encoding);
       }
     },
     isDirExist: function (folderPath) {

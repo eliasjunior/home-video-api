@@ -17,22 +17,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" }).end();
+});
+
 app.use("/", VideosRouter);
 app.use("/", ImagesRouter);
 app.use("/", CaptionsRouter);
 
-app.listen(config.port, async () => {
-  console.log(`Application started, ${config.serverUrl}`);
-  console.log(`App config`);
-  console.log(`Movies folder: ${config.moviesDir}`);
-  console.log(`baseLocation: ${config.baseLocation}`);
+if (process.env.NODE_ENV !== "test") {
+  app.listen(config.port, async () => {
+    console.log(`Application started, ${config.serverUrl}`);
+    console.log(`App config`);
+    console.log(`Movies folder: ${config.moviesDir}`);
+    console.log(`baseLocation: ${config.baseLocation}`);
 
-  const jsonUrl = `${config.protocol}://${config.imageServerHost}:${config.imagePort}/json/${config.imageMapFileName}`;
-  logD("jsonUrl=>", jsonUrl);
-  const moviesMap = await fetchAndLogJsonData(jsonUrl);
-  logD("moviesMap=", moviesMap);
-  setMoviesMap(moviesMap);
-});
+    const jsonUrl = `${config.protocol}://${config.imageServerHost}:${config.imagePort}/json/${config.imageMapFileName}`;
+    logD("jsonUrl=>", jsonUrl);
+    const moviesMap = await fetchAndLogJsonData(jsonUrl);
+    logD("moviesMap=", moviesMap);
+    setMoviesMap(moviesMap);
+  });
+}
 
 async function fetchAndLogJsonData(remoteJsonUrl) {
   try {
@@ -43,3 +49,5 @@ async function fetchAndLogJsonData(remoteJsonUrl) {
     );
   }
 }
+
+export default app;
