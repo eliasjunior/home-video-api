@@ -1,10 +1,15 @@
-import {mapMedia} from "./MediaMapper";
+import { mapMedia } from "./MediaMapper";
 import path from 'path';
+import { getImageUrl } from "../../common/Util";
 
+jest.mock("../../common/Util", () => ({
+  getImageUrl: jest.fn(),
+}));
 
 
 describe("MediaMapper", () => {
   it("should map a media", () => {
+    getImageUrl.mockReturnValueOnce("");
     const fileList = ["myMovie.mp4", "myMovie.srt"];
 
     const fileExtEqual = (fileName) => {
@@ -29,6 +34,7 @@ describe("MediaMapper", () => {
   });
 
   it("should get the images from image server", () => {
+    getImageUrl.mockReturnValueOnce("http://image.server/harry.png");
     const objMedia = mapMedia({
       files: ["myMovie.mp4", "myMovie.srt"],
       folderName: "Harry Potter and the Deathly Hallows Part 1 (2010) [1080p]",
