@@ -96,3 +96,16 @@ After task completion:
 - New tasks should be defined separately
 
 Agents must not assume previous context remains valid unless explicitly stated.
+
+---
+
+## Suggested Next Tasks (Testing-First)
+
+1. Add a `smoke` script to run only smoke/health tests.
+2. Add a test helper to load `.env.test` safely and avoid config drift.
+3. Add unit tests for `RouterUtil.imgProvider` (fallback behavior + image path resolution).
+4. Add tests for `StreamingUtilUseCase.getStartEndBytes` edge cases (no range, invalid range).
+5. Add tests for `/videos` and `/series` endpoints with mocked file system.
+6. Add tests for `FileLib.readDirectory` and `readFile` error behavior.
+7. Add a minimal snapshot test for the videos JSON response shape.
+8. Set coverage thresholds (start low, e.g. 30%) and gradually increase.

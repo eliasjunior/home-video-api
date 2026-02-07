@@ -9,7 +9,8 @@
     "dev": "showdebug=true NODE_ENV=development nodemon --exec babel-node init.js",
     "debugP": "NODE_ENV=production showdebug=true babel-node init.js",
     "lint": "eslint .",
-    "all": "npm test && npm run lint"
+    "all": "npm test && npm run lint",
+    "smoke": "jest src/common/ConfigSmoke.test.js src/common/Health.test.js"
   },
   "repository": {
     "type": "git",

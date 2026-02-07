@@ -26,9 +26,11 @@ export default [
     languageOptions: {
       globals: {
         describe: "readonly",
+        beforeEach: "readonly",
         it: "readonly",
         expect: "readonly",
         jest: "readonly",
+        Buffer: "readonly",
       },
     },
   },
