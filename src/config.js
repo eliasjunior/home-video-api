@@ -28,6 +28,7 @@ export default function config() {
     COOKIE_SECURE,
     COOKIE_SAMESITE,
     COOKIE_DOMAIN,
+    CORS_ORIGIN,
   } = process.env;
 
   const result = {};
@@ -56,6 +57,7 @@ export default function config() {
     process.env.NODE_ENV === "production";
   result.cookieSameSite = COOKIE_SAMESITE || "Lax";
   result.cookieDomain = COOKIE_DOMAIN || undefined;
+  result.corsOrigin = CORS_ORIGIN || "";
 
   logD("config result", result);
   return result;

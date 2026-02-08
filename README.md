@@ -77,6 +77,24 @@ Config (env):
 - `COOKIE_DOMAIN` (optional)
 - `IMAGE_FALLBACK_BASE_URL` (optional; default is API `/public`)
 
+## Admin Credentials (Simple, Secure)
+
+Use a bcrypt hash in env (preferred):
+```env
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD_HASH="<bcrypt hash>"
+```
+
+Generate a hash:
+```bash
+npm run hash:password -- "your-strong-password"
+```
+
+Dev/test can use plaintext for convenience (avoid in prod):
+```env
+ADMIN_PASSWORD="password"
+```
+
 ## Endpoints
 
 Public:
@@ -129,4 +147,3 @@ curl -X POST http://localhost:8080/auth/logout \
 ## Notes
 - Refresh tokens are rotated on each refresh call.
 - Tokens are in memory; restarting the server clears refresh tokens.
-

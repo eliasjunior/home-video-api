@@ -42,9 +42,10 @@ export function createAuthRouter({ refreshTokenStore }) {
   const router = express.Router();
   const cfg = config();
 
-  router.post("/login", (req, res) => {
+  router.post("/login", async (req, res) => {
     const { username, password } = req.body || {};
-    if (!validateCredentials({ username, password })) {
+    const isValid = await validateCredentials({ username, password });
+    if (!isValid) {
       return res.status(401).json({ message: "Invalid credentials" }).end();
     }
 

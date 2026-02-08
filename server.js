@@ -12,10 +12,30 @@ import { setMoviesMap } from "./src/libs/MemoryLib";
 import { createAuthRouter } from "./src/routers/AuthRouter";
 import { createInMemoryRefreshTokenStore } from "./src/auth/refreshTokenStore";
 import { requireAuth } from "./src/middleware/auth";
+import { createProgressRouter } from "./src/routers/ProgressRouter";
 
 let app = express();
 
-app.use(cors());
+const corsOrigins = (config.corsOrigin || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+    if (corsOrigins.length === 0) {
+      return callback(null, true);
+    }
+    if (corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -31,6 +51,7 @@ app.use(requireAuth);
 app.use("/", VideosRouter);
 app.use("/", ImagesRouter);
 app.use("/", CaptionsRouter);
+app.use("/", createProgressRouter());
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(config.port, async () => {

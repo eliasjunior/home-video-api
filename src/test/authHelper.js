@@ -1,10 +1,10 @@
 import request from "supertest";
-import { AUTH_USER } from "../auth/user";
-
 export async function getAuthHeader(app) {
+  const username = process.env.ADMIN_USERNAME || "admin";
+  const password = process.env.ADMIN_PASSWORD || "admin";
   const response = await request(app).post("/auth/login").send({
-    username: AUTH_USER.username,
-    password: AUTH_USER.password,
+    username,
+    password,
   });
 
   return `Bearer ${response.body.accessToken}`;

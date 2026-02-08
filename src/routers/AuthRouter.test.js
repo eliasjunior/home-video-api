@@ -2,7 +2,6 @@ import request from "supertest";
 import express from "express";
 import { createAuthRouter } from "./AuthRouter";
 import { createInMemoryRefreshTokenStore } from "../auth/refreshTokenStore";
-import { AUTH_USER } from "../auth/user";
 
 describe("AuthRouter", () => {
   let app;
@@ -28,9 +27,11 @@ describe("AuthRouter", () => {
   }
 
   it("login returns tokens with valid credentials", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "admin";
     const response = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     expect(response.status).toBe(200);
@@ -51,9 +52,11 @@ describe("AuthRouter", () => {
   });
 
   it("refresh returns new tokens for valid refresh token", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "admin";
     const login = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     const cookies = getCookieHeader(login);
@@ -70,9 +73,11 @@ describe("AuthRouter", () => {
   });
 
   it("refresh returns 401 when token is revoked", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "admin";
     const login = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     const cookies = getCookieHeader(login);
@@ -92,9 +97,11 @@ describe("AuthRouter", () => {
   });
 
   it("refresh returns 403 when csrf header is missing for cookie refresh", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "admin";
     const login = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     const cookies = getCookieHeader(login);
@@ -106,9 +113,11 @@ describe("AuthRouter", () => {
   });
 
   it("refresh returns 401 when refresh token is not a refresh type", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "admin";
     const login = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     const response = await request(app).post("/auth/refresh").send({
@@ -124,9 +133,11 @@ describe("AuthRouter", () => {
   });
 
   it("logout revokes refresh token", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "admin";
     const login = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     const cookies = getCookieHeader(login);
@@ -146,9 +157,11 @@ describe("AuthRouter", () => {
   });
 
   it("logout returns 403 when csrf header is missing for cookie logout", async () => {
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const password = process.env.ADMIN_PASSWORD || "password";
     const login = await request(app).post("/auth/login").send({
-      username: AUTH_USER.username,
-      password: AUTH_USER.password,
+      username,
+      password,
     });
 
     const cookies = getCookieHeader(login);

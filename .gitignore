@@ -30,6 +30,9 @@ npm-debug.log
 *.iws
 
 .tmp/
+# env files
+.env.production
+data/progress.json
 #bower
 node_modules/
 www/build/

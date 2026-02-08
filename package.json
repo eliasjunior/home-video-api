@@ -10,7 +10,8 @@
     "debugP": "NODE_ENV=production showdebug=true babel-node init.js",
     "lint": "eslint .",
     "all": "npm test && npm run lint",
-    "smoke": "jest src/common/ConfigSmoke.test.js src/common/Health.test.js"
+    "smoke": "jest src/common/ConfigSmoke.test.js src/common/Health.test.js",
+    "hash:password": "node scripts/hash-password.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "@babel/node": "^7.29.0",
     "@babel/preset-env": "^7.29.0",
     "axios": "^1.13.4",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
