@@ -143,6 +143,10 @@ describe("VideosRouter", () => {
       byId: {},
       allIds: [],
     });
+    dataAccess.getVideos.mockReturnValueOnce({
+      byId: { movie1: { id: "movie1" } },
+      allIds: ["movie1"],
+    });
 
     const response = await request(app)
       .get("/videos/missing")
@@ -189,6 +193,10 @@ describe("VideosRouter", () => {
     setSeriesMap({
       byId: {},
       allIds: [],
+    });
+    dataAccess.getVideos.mockReturnValueOnce({
+      byId: { movie1: { id: "movie1" } },
+      allIds: ["movie1"],
     });
 
     const router = require("./VideosRouter").default;

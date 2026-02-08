@@ -11,7 +11,10 @@
     "lint": "eslint .",
     "all": "npm test && npm run lint",
     "smoke": "jest src/common/ConfigSmoke.test.js src/common/Health.test.js",
-    "hash:password": "node scripts/hash-password.js"
+    "hash:password": "node scripts/hash-password.js",
+    "docker:build": "docker build -t home-video-api:dev .",
+    "docker:run": "docker run --rm -p 8080:8080 home-video-api:dev",
+    "docker:start": "babel-node init.js"
   },
   "repository": {
     "type": "git",

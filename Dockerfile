@@ -1,10 +1,8 @@
-FROM node:18-alpine as build-node18-img
-# ENV NODE_ENV=${ENV}  
+FROM node:24-alpine
 WORKDIR /app
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm install --omit=dev
 COPY . . 
 EXPOSE 8080
-ENTRYPOINT [ "npm", "run", "debugP"]
-
+CMD [ "npm", "run", "docker:start"]

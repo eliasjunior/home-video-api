@@ -98,7 +98,7 @@ function loadSeries(_, response) {
 }
 function loadMovie(req, response) {
   const { id, isSeries } = req.params;
-  const movieMap = getMovieMap();
+  let movieMap = getMovieMap();
   const seriesMap = getSeriesMap();
 
   const sendLoadMovieError = () => {
@@ -112,7 +112,35 @@ function loadMovie(req, response) {
   };
 
   if (movieMap.allIds.length === 0) {
-    //TODO do it later, in case the map empty need to call getVideos
+    try {
+      const videos = getVideos({ baseLocation: `${moviesAbsPath}` });
+      if (videos.allIds.length === 0) {
+        sendError({
+          response,
+          message: `No videos were found. Expected movies under ${config.videosPath}/${config.moviesDir}/<MovieFolder>/<videoFile>.`,
+          statusCode: 500,
+        });
+        return;
+      }
+      const tempMap = videos.allIds.reduce(
+        (prev, id) => {
+          prev.byId[id] = videos.byId[id];
+          prev.allIds.push(id);
+          return prev;
+        },
+        { byId: {}, allIds: [] }
+      );
+      setMovieMap(tempMap);
+      movieMap = tempMap;
+    } catch (error) {
+      sendError({
+        response,
+        message: "Attempt to load videos has failed",
+        statusCode: 500,
+        error,
+      });
+      return;
+    }
   }
   if (isSeries) {
     if (!seriesMap.byId[id]) {

@@ -10,6 +10,18 @@ npm test
 npm run dev
 ```
 
+## Docker (Local Dev)
+
+Build:
+```bash
+npm run docker:build
+```
+
+Run:
+```bash
+npm run docker:run
+```
+
 ## Environment Variables
 
 JWT settings (required for auth):
@@ -77,6 +89,10 @@ Config (env):
 - `COOKIE_DOMAIN` (optional)
 - `IMAGE_FALLBACK_BASE_URL` (optional; default is API `/public`)
 
+Cookie notes:
+- Local dev over HTTP should use `COOKIE_SECURE=false` and `COOKIE_SAMESITE=Lax`.
+- Cross-site cookies require `COOKIE_SAMESITE=None` **and** `COOKIE_SECURE=true` (HTTPS).
+
 ## Admin Credentials (Simple, Secure)
 
 Use a bcrypt hash in env (preferred):
@@ -105,6 +121,9 @@ Public:
 
 Protected:
 - All existing video/series endpoints require `Authorization: Bearer <accessToken>`.
+- Progress endpoints (require auth):
+  - `GET /progress/:videoId`
+  - `POST /progress`
 
 ## Auth Flow (Example)
 
@@ -147,3 +166,64 @@ curl -X POST http://localhost:8080/auth/logout \
 ## Notes
 - Refresh tokens are rotated on each refresh call.
 - Tokens are in memory; restarting the server clears refresh tokens.
+
+## Video Progress (FE Integration)
+
+The API stores per-user video progress in a local JSON file at `data/progress.json`.
+Each user is keyed by `req.user.id`, so authentication must run before these routes.
+
+### Store/Update Progress
+
+Endpoint:
+- `POST /progress`
+
+Body:
+```json
+{
+  "videoId": "movie-1",
+  "positionSeconds": 12,
+  "durationSeconds": 100
+}
+```
+
+Rules:
+- `positionSeconds` must be a non-negative number.
+- `durationSeconds` is optional; if provided, it must be a positive number.
+
+Example:
+```bash
+curl -X POST http://localhost:8080/progress \
+  -H "Authorization: Bearer <accessToken>" \
+  -H "Content-Type: application/json" \
+  -d '{"videoId":"movie-1","positionSeconds":12,"durationSeconds":100}'
+```
+
+### Fetch Progress
+
+Endpoint:
+- `GET /progress/:videoId`
+
+Example:
+```bash
+curl http://localhost:8080/progress/movie-1 \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+Responses:
+- `200` with the progress record.
+- `404` if no progress exists for the video.
+- `400` if user/videoId is missing.
+
+### Frontend Flow (Suggested)
+
+1. On video load:
+   - Call `GET /progress/:videoId` and resume playback if a record exists.
+2. During playback:
+   - Periodically (e.g., every 5–10 seconds) call `POST /progress` with the current
+     `positionSeconds` and `durationSeconds`.
+3. On video end:
+   - Optionally call `POST /progress` with `positionSeconds` = `durationSeconds`.
+
+Notes:
+- Progress is stored locally on the API in `data/progress.json`. Restarting the server
+  does not clear progress, but deleting the file will.

@@ -20,8 +20,19 @@ const corsOrigins = (config.corsOrigin || "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+const isDev = process.env.NODE_ENV === "development";
+const allowedDevOrigin = (origin) => {
+  if (!origin) return true;
+  if (origin === "http://localhost:3000") return true;
+  return /^http:\/\/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}):3000$/.test(
+    origin
+  );
+};
 const corsOptions = {
   origin: (origin, callback) => {
+    if (isDev && allowedDevOrigin(origin)) {
+      return callback(null, true);
+    }
     if (!origin) {
       return callback(null, true);
     }
@@ -60,7 +71,9 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Movies folder: ${config.moviesDir}`);
     console.log(`baseLocation: ${config.baseLocation}`);
 
-  if (String(config.imageMapEnabled).toLowerCase() !== "false") {
+  const imageMapEnabled =
+    String(config.imageMapEnabled || "").toLowerCase() === "true";
+  if (imageMapEnabled) {
     const jsonUrl = `${config.protocol}://${config.imageServerHost}:${config.imagePort}/json/${config.imageMapFileName}`;
     logD("jsonUrl=>", jsonUrl);
     const moviesMap = await fetchAndLogJsonData(jsonUrl);

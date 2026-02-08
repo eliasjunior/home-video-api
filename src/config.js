@@ -55,7 +55,11 @@ export default function config() {
   result.cookieSecure =
     String(COOKIE_SECURE || "").toLowerCase() === "true" ||
     process.env.NODE_ENV === "production";
-  result.cookieSameSite = COOKIE_SAMESITE || "Lax";
+  const sameSite = String(COOKIE_SAMESITE || "lax").toLowerCase();
+  result.cookieSameSite =
+    sameSite === "lax" || sameSite === "strict" || sameSite === "none"
+      ? sameSite
+      : "lax";
   result.cookieDomain = COOKIE_DOMAIN || undefined;
   result.corsOrigin = CORS_ORIGIN || "";
 

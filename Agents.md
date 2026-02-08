@@ -21,7 +21,6 @@ assume capabilities beyond what is explicitly stated.
 ## Environment Constraints
 
 - Agents:
-  - ❌ cannot execute shell commands
   - ❌ cannot change Node versions
   - ❌ cannot elevate permissions
 - Human (me):
@@ -47,6 +46,22 @@ Agents must:
 - Goal:
   - Incrementally update dependencies
   - Keep the app running at all times
+
+## Current Context: Auth (Cookie + CSRF)
+
+- The API supports **HttpOnly cookie-based auth** for access + refresh tokens.
+- Cookies:
+  - `access_token` (HttpOnly, path `/`)
+  - `refresh_token` (HttpOnly, path `/auth`)
+  - `csrf_token` (readable by JS)
+- Access tokens are accepted via `Authorization: Bearer <token>` header or the
+  `access_token` cookie.
+- CSRF protection is enforced for `/auth/refresh` and `/auth/logout` **only when**
+  the refresh token is sent via cookie:
+  - The client must send `x-csrf-token` matching the `csrf_token` cookie.
+  - If `refreshToken` is provided in the JSON body, CSRF is not required.
+- Frontend must send cookies (`credentials: "include"` / `withCredentials: true`).
+- Refresh tokens are stored in-memory (adapter pattern) and rotated on refresh.
 
 ---
 
@@ -110,6 +125,13 @@ Agents must not assume previous context remains valid unless explicitly stated.
 7. Add a minimal snapshot test for the videos JSON response shape.
 8. Set coverage thresholds (start low, e.g. 30%) and gradually increase.
 
+## Suggested Next Tasks (Docker, Baby Steps)
+
+1. Add a `.dockerignore` to reduce build context size.
+2. Update `Dockerfile` to a local/dev-friendly base image (align with Node 24).
+3. Add a `docker:build` script to build the image locally.
+4. Add a short README section on how to run the container locally.
+
 ---
 
 ## Next Task: Add Authentication (JWT)
@@ -151,4 +173,3 @@ Agents must not assume previous context remains valid unless explicitly stated.
 - Refresh token store: in-memory adapter, injectable for future replacement.
 - Access token TTL: 15 minutes.
 - Refresh token TTL: 180 days.
-
