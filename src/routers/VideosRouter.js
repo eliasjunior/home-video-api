@@ -98,15 +98,10 @@ function loadSeries(_, response) {
 }
 function loadMovie(req, response) {
   const { id, isSeries } = req.params;
-  let movieMap;
-  let seriesMap;
-  if (isSeries) {
-    seriesMap = getSeriesMap();
-  } else {
-    movieMap = getMovieMap();
-  }
+  const movieMap = getMovieMap();
+  const seriesMap = getSeriesMap();
 
-  const sendError = () => {
+  const sendLoadMovieError = () => {
     logE(`Attempting to get a video in memory id ${id} has failed`);
     sendError({
       response,
@@ -121,12 +116,12 @@ function loadMovie(req, response) {
   }
   if (isSeries) {
     if (!seriesMap.byId[id]) {
-      sendError();
+      sendLoadMovieError();
     } else {
       flushJSON(response, movieMap.byId[id]);
     }
   } else if (!movieMap.byId[id]) {
-    sendError();
+    sendLoadMovieError();
   } else {
     flushJSON(response, movieMap.byId[id]);
   }

@@ -109,3 +109,46 @@ Agents must not assume previous context remains valid unless explicitly stated.
 6. Add tests for `FileLib.readDirectory` and `readFile` error behavior.
 7. Add a minimal snapshot test for the videos JSON response shape.
 8. Set coverage thresholds (start low, e.g. 30%) and gradually increase.
+
+---
+
+## Next Task: Add Authentication (JWT)
+
+**Goal**
+- Add authentication using JWT.
+- Enable refresh tokens that can re-authenticate up to **6 months**.
+- Keep the JWT implementation clean and easy to learn from.
+
+**Requirements**
+1. Add access + refresh token flow.
+2. Access tokens should be short-lived (e.g., minutes).
+3. Refresh tokens should be long-lived (up to 6 months).
+4. Protect existing routes with authentication (except health and auth endpoints).
+5. Provide clear docs/examples for how to login, refresh, and access protected endpoints.
+6. Use an injectable refresh token store (adapter pattern).
+
+**Suggested Implementation Steps**
+1. Define auth config (token secrets, expirations) and load via env.
+2. Add a simple auth user source (hard-coded single user).
+3. Create a refresh token store interface (adapter pattern).
+4. Implement an in-memory refresh token store adapter.
+5. Add auth endpoints:
+   - `POST /auth/login`
+   - `POST /auth/refresh`
+   - `POST /auth/logout` (optional: revoke refresh token)
+6. Implement JWT middleware:
+   - Verify access token
+   - Attach user info to `req.user`
+7. Protect existing routes with authentication (exclude `/health` and `/auth/*`).
+8. Add tests for:
+   - login success/failure
+   - access token protected route
+   - refresh token rotation/expiry
+9. Update README with usage examples and curl commands.
+
+**Chosen Defaults**
+- User model: hard-coded single user.
+- Refresh token store: in-memory adapter, injectable for future replacement.
+- Access token TTL: 15 minutes.
+- Refresh token TTL: 180 days.
+

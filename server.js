@@ -9,6 +9,9 @@ import { logD } from "./src/common/MessageUtil";
 import { loadRemoteJsonFile } from "./src/libs/HttpLib";
 import path from "path";
 import { setMoviesMap } from "./src/libs/MemoryLib";
+import { createAuthRouter } from "./src/routers/AuthRouter";
+import { createInMemoryRefreshTokenStore } from "./src/auth/refreshTokenStore";
+import { requireAuth } from "./src/middleware/auth";
 
 let app = express();
 
@@ -21,6 +24,10 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" }).end();
 });
 
+const refreshTokenStore = createInMemoryRefreshTokenStore();
+app.use("/auth", createAuthRouter({ refreshTokenStore }));
+
+app.use(requireAuth);
 app.use("/", VideosRouter);
 app.use("/", ImagesRouter);
 app.use("/", CaptionsRouter);

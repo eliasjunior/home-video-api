@@ -27,10 +27,22 @@ export default [
       globals: {
         describe: "readonly",
         beforeEach: "readonly",
+        afterAll: "readonly",
+        afterEach: "readonly",
         it: "readonly",
         expect: "readonly",
         jest: "readonly",
         Buffer: "readonly",
+      },
+    },
+  },
+  {
+    files: ["src/test/setupJest.js"],
+    languageOptions: {
+      globals: {
+        beforeAll: "readonly",
+        afterAll: "readonly",
+        jest: "readonly",
       },
     },
   },
