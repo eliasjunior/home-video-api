@@ -52,3 +52,24 @@ export function printMemoryUsage() {
 
   console.log(`Total Heap Size: ${totalHeapSizeMB} MB`);
 }
+
+export function parseCookies(cookieHeader = "") {
+  return cookieHeader.split(";").reduce((acc, part) => {
+    const trimmed = part.trim();
+    if (!trimmed) return acc;
+    const eqIndex = trimmed.indexOf("=");
+    if (eqIndex < 0) return acc;
+    const key = trimmed.slice(0, eqIndex).trim();
+    const value = trimmed.slice(eqIndex + 1).trim();
+    if (key) {
+      acc[key] = decodeURIComponent(value);
+    }
+    return acc;
+  }, {});
+}
+
+export function getCookie(req, name) {
+  const cookieHeader = req.headers?.cookie || "";
+  const cookies = parseCookies(cookieHeader);
+  return cookies[name];
+}

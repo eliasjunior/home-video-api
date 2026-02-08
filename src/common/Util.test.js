@@ -3,6 +3,8 @@ import {
   removeSpecialCharacters,
   requiredParameter,
   printMemoryUsage,
+  parseCookies,
+  getCookie,
 } from "./Util";
 
 describe("Util", () => {
@@ -71,5 +73,16 @@ describe("Util", () => {
     expect(console.log).toHaveBeenCalled();
     console.log = originalLog;
     process.memoryUsage = originalMemoryUsage;
+  });
+
+  it("parses cookies from header", () => {
+    const cookies = parseCookies("a=1; b=two; c=three");
+    expect(cookies).toEqual({ a: "1", b: "two", c: "three" });
+  });
+
+  it("gets cookie by name", () => {
+    const req = { headers: { cookie: "token=abc; theme=dark" } };
+    expect(getCookie(req, "token")).toBe("abc");
+    expect(getCookie(req, "missing")).toBeUndefined();
   });
 });

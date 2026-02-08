@@ -15,6 +15,18 @@ describe("AuthRouter", () => {
     app.use("/auth", createAuthRouter({ refreshTokenStore: store }));
   });
 
+  function getCookieHeader(response) {
+    const raw = response.headers["set-cookie"] || [];
+    return raw.map((c) => c.split(";")[0]).join("; ");
+  }
+
+  function getCookieValue(response, name) {
+    const raw = response.headers["set-cookie"] || [];
+    const match = raw.find((c) => c.startsWith(`${name}=`));
+    if (!match) return undefined;
+    return match.split(";")[0].split("=")[1];
+  }
+
   it("login returns tokens with valid credentials", async () => {
     const response = await request(app).post("/auth/login").send({
       username: AUTH_USER.username,
@@ -23,7 +35,10 @@ describe("AuthRouter", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.accessToken).toBeTruthy();
-    expect(response.body.refreshToken).toBeTruthy();
+    const cookieHeader = getCookieHeader(response);
+    expect(cookieHeader).toContain("access_token=");
+    expect(cookieHeader).toContain("refresh_token=");
+    expect(cookieHeader).toContain("csrf_token=");
   });
 
   it("login returns 401 with invalid credentials", async () => {
@@ -41,13 +56,17 @@ describe("AuthRouter", () => {
       password: AUTH_USER.password,
     });
 
-    const response = await request(app).post("/auth/refresh").send({
-      refreshToken: login.body.refreshToken,
-    });
+    const cookies = getCookieHeader(login);
+    const csrf = getCookieValue(login, "csrf_token");
+    const response = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", cookies)
+      .set("x-csrf-token", csrf || "");
 
     expect(response.status).toBe(200);
     expect(response.body.accessToken).toBeTruthy();
-    expect(response.body.refreshToken).toBeTruthy();
+    const cookieHeader = getCookieHeader(response);
+    expect(cookieHeader).toContain("refresh_token=");
   });
 
   it("refresh returns 401 when token is revoked", async () => {
@@ -56,16 +75,52 @@ describe("AuthRouter", () => {
       password: AUTH_USER.password,
     });
 
-    const response1 = await request(app).post("/auth/refresh").send({
-      refreshToken: login.body.refreshToken,
-    });
+    const cookies = getCookieHeader(login);
+    const csrf = getCookieValue(login, "csrf_token");
+    const response1 = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", cookies)
+      .set("x-csrf-token", csrf || "");
 
-    const response2 = await request(app).post("/auth/refresh").send({
-      refreshToken: login.body.refreshToken,
-    });
+    const response2 = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", cookies)
+      .set("x-csrf-token", csrf || "");
 
     expect(response1.status).toBe(200);
     expect(response2.status).toBe(401);
+  });
+
+  it("refresh returns 403 when csrf header is missing for cookie refresh", async () => {
+    const login = await request(app).post("/auth/login").send({
+      username: AUTH_USER.username,
+      password: AUTH_USER.password,
+    });
+
+    const cookies = getCookieHeader(login);
+    const response = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", cookies);
+
+    expect(response.status).toBe(403);
+  });
+
+  it("refresh returns 401 when refresh token is not a refresh type", async () => {
+    const login = await request(app).post("/auth/login").send({
+      username: AUTH_USER.username,
+      password: AUTH_USER.password,
+    });
+
+    const response = await request(app).post("/auth/refresh").send({
+      refreshToken: login.body.accessToken,
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  it("refresh returns 400 when refresh token is missing", async () => {
+    const response = await request(app).post("/auth/refresh").send({});
+    expect(response.status).toBe(400);
   });
 
   it("logout revokes refresh token", async () => {
@@ -74,15 +129,33 @@ describe("AuthRouter", () => {
       password: AUTH_USER.password,
     });
 
-    const logout = await request(app).post("/auth/logout").send({
-      refreshToken: login.body.refreshToken,
-    });
+    const cookies = getCookieHeader(login);
+    const csrf = getCookieValue(login, "csrf_token");
+    const logout = await request(app)
+      .post("/auth/logout")
+      .set("Cookie", cookies)
+      .set("x-csrf-token", csrf || "");
 
-    const refresh = await request(app).post("/auth/refresh").send({
-      refreshToken: login.body.refreshToken,
-    });
+    const refresh = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", cookies)
+      .set("x-csrf-token", csrf || "");
 
     expect(logout.status).toBe(200);
     expect(refresh.status).toBe(401);
+  });
+
+  it("logout returns 403 when csrf header is missing for cookie logout", async () => {
+    const login = await request(app).post("/auth/login").send({
+      username: AUTH_USER.username,
+      password: AUTH_USER.password,
+    });
+
+    const cookies = getCookieHeader(login);
+    const logout = await request(app)
+      .post("/auth/logout")
+      .set("Cookie", cookies);
+
+    expect(logout.status).toBe(403);
   });
 });

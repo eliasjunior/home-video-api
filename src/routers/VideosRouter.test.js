@@ -233,17 +233,20 @@ describe("VideosRouter", () => {
     expect(streamingUtil.streamEvents).toHaveBeenCalled();
   });
 
-  it("GET /videos/:folder/:fileName returns 500 when range is missing", async () => {
+  it("GET /videos/:folder/:fileName streams full file when range is missing", async () => {
     const authHeader = await getAuthHeader(app);
-    dataAccess.getFileDirInfo.mockReturnValueOnce({ size: 1000 });
-    streamingUtil.getStartEndBytes.mockReturnValueOnce({ start: 0, end: 99 });
+    dataAccess.getFileDirInfo.mockReturnValueOnce({ size: 0 });
+    streamingData.createStream.mockReturnValueOnce({ on: jest.fn() });
+    streamingUtil.streamEvents.mockImplementationOnce(({ outputWriter }) => {
+      outputWriter.end();
+    });
 
     const response = await request(app)
       .get("/videos/Movies/movie.mp4")
       .set("Authorization", authHeader);
 
-    expect(response.status).toBe(500);
-    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(200);
+    expect(streamingUtil.streamEvents).toHaveBeenCalled();
   });
 
   it("GET /videos/:folder/:fileName returns 500 when file lookup fails", async () => {

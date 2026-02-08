@@ -33,6 +33,50 @@ Default user (hard‑coded):
 - `username`: `admin`
 - `password`: `password`
 
+## Cookie-Based Auth (Recommended)
+
+The API also supports **HttpOnly cookies** for access/refresh tokens with SameSite + CSRF protection.
+
+How it works:
+- `access_token` and `refresh_token` are set as **HttpOnly** cookies.
+- A `csrf_token` cookie is set (readable by JS).
+- For `/auth/refresh` and `/auth/logout`, the client must send the header:
+  - `x-csrf-token: <csrf_token cookie value>`
+
+Frontend requirements:
+- Always send cookies: `credentials: "include"` (fetch) or `withCredentials: true` (axios).
+- For refresh/logout, read `csrf_token` from `document.cookie` and send it in `x-csrf-token`.
+
+Example (fetch):
+```js
+function getCookie(name) {
+  return document.cookie
+    .split(";")
+    .map((c) => c.trim())
+    .find((c) => c.startsWith(`${name}=`))
+    ?.split("=")[1];
+}
+
+async function refresh() {
+  const csrf = getCookie("csrf_token");
+  const res = await fetch("http://localhost:8080/auth/refresh", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-csrf-token": csrf || "",
+    },
+    credentials: "include",
+  });
+  return res.json();
+}
+```
+
+Config (env):
+- `COOKIE_SECURE` (true in prod; false for local HTTP)
+- `COOKIE_SAMESITE` (`Lax` by default)
+- `COOKIE_DOMAIN` (optional)
+- `IMAGE_FALLBACK_BASE_URL` (optional; default is API `/public`)
+
 ## Endpoints
 
 Public:
@@ -59,7 +103,7 @@ curl -X POST http://localhost:8080/auth/login \
 
 Response includes:
 ```json
-{ "accessToken": "...", "refreshToken": "..." }
+{ "accessToken": "..." }
 ```
 
 ### 2) Call Protected Endpoint
@@ -85,6 +129,4 @@ curl -X POST http://localhost:8080/auth/logout \
 ## Notes
 - Refresh tokens are rotated on each refresh call.
 - Tokens are in memory; restarting the server clears refresh tokens.
-
-
 

@@ -48,4 +48,9 @@ describe("FileLib", () => {
 
     expect(result).toBe(buf);
   });
+
+  it("readJson returns undefined when parsing fails", () => {
+    const result = fileLib.readJson("{bad json}");
+    expect(result).toBeUndefined();
+  });
 });

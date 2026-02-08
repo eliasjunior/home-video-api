@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
+const os = require("os");
 
 import { logD } from "./common/MessageUtil";
-import { USER_LOCATION } from "./common/AppServerConstant";
 
 if (process.env.NODE_ENV === "development") {
   dotenv.config({ path: ".env.development" });
@@ -25,6 +25,9 @@ export default function config() {
     IMAGE_MAP,
     IMAGE_MAP_ENABLED,
     IMAGE_FALLBACK_BASE_URL,
+    COOKIE_SECURE,
+    COOKIE_SAMESITE,
+    COOKIE_DOMAIN,
   } = process.env;
 
   const result = {};
@@ -39,7 +42,7 @@ export default function config() {
   result.videosPath = VIDEO_PATH;
   result.moviesDir = MOVIES_DIR;
   result.seriesDir = SERIES_DIR;
-  result.baseLocation = USER_LOCATION;
+  result.baseLocation = os.homedir();
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
   result.imageFallbackBaseUrl =
     IMAGE_FALLBACK_BASE_URL || `${result.serverUrl}/public`;
@@ -48,6 +51,11 @@ export default function config() {
   result.imagePort = IMAGES_PORT_SERVER;
   result.imageMapFileName = IMAGE_MAP;
   result.imageMapEnabled = IMAGE_MAP_ENABLED;
+  result.cookieSecure =
+    String(COOKIE_SECURE || "").toLowerCase() === "true" ||
+    process.env.NODE_ENV === "production";
+  result.cookieSameSite = COOKIE_SAMESITE || "Lax";
+  result.cookieDomain = COOKIE_DOMAIN || undefined;
 
   logD("config result", result);
   return result;
@@ -68,4 +76,3 @@ function getLocalIPAddress() {
   }
   return "127.0.0.1"; // Fallback to localhost
 }
-

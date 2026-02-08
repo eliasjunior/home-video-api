@@ -44,4 +44,14 @@ describe("streamingUseCases.createStream", () => {
     expect(result).toBe(stream);
     expect(fs.createReadStream).toHaveBeenCalledWith("/file.mp4");
   });
+
+  it("logs and rethrows when createReadStream throws", () => {
+    fs.createReadStream.mockImplementationOnce(() => {
+      throw new Error("boom");
+    });
+
+    expect(() =>
+      streaming.createStream({ fileAbsPath: "/file.mp4", start: 0, end: 1 })
+    ).toThrow("boom");
+  });
 });

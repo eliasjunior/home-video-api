@@ -6,7 +6,7 @@ const refreshSecret = process.env.JWT_REFRESH_SECRET || "refresh-secret";
 const accessTtl = process.env.JWT_ACCESS_TTL || "15m";
 const refreshTtl = process.env.JWT_REFRESH_TTL || "180d";
 
-function parseDurationToMs(value) {
+export function parseDurationToMs(value) {
   if (typeof value === "number") {
     return value;
   }

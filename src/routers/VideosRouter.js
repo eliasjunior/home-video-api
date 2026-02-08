@@ -161,8 +161,8 @@ function doStreaming({ fileAbsPath, request, response }) {
   try {
     const statInfo = getFileDirInfo(fileAbsPath);
     const { size } = statInfo;
-    const { start, end } = getStartEndBytes(range, size);
     if (range) {
+      const { start, end } = getStartEndBytes(range, size);
       const headers = getHeaderStream({ start, end, size });
       //write the header on response and pass it to stream
       response.writeHead(PARTIAL_CONTENT_STATUS, headers);
@@ -180,11 +180,17 @@ function doStreaming({ fileAbsPath, request, response }) {
         outputWriter: response,
       });
     } else {
-      logE(`NO RANGE ${fileAbsPath}`);
-      sendError({
-        response,
-        message: "There is no range",
-        statusCode: 500,
+      logE(`NO RANGE ${fileAbsPath}. Streaming full file.`);
+      response.writeHead(SUCCESS_STATUS, {
+        "Accept-Ranges": "bytes",
+        "Content-Length": size,
+        "Content-Type": "video/mp4",
+      });
+      const readStream = createStream({ fileAbsPath });
+      streamEvents({
+        readStream,
+        useCaseLabel: "video",
+        outputWriter: response,
       });
     }
   } catch (error) {
