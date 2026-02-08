@@ -47,7 +47,7 @@ function loadMovies(_, response) {
     if (videos.allIds.length === 0) {
       sendError({
         response,
-        message: `No videos were found in the given location ${config.videosPath}`,
+        message: `No videos were found. Expected movies under ${config.videosPath}/${config.moviesDir}/<MovieFolder>/<videoFile>.`,
         statusCode: 500,
       });
     } else {

@@ -39,21 +39,33 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Movies folder: ${config.moviesDir}`);
     console.log(`baseLocation: ${config.baseLocation}`);
 
+  if (String(config.imageMapEnabled).toLowerCase() !== "false") {
     const jsonUrl = `${config.protocol}://${config.imageServerHost}:${config.imagePort}/json/${config.imageMapFileName}`;
     logD("jsonUrl=>", jsonUrl);
     const moviesMap = await fetchAndLogJsonData(jsonUrl);
     logD("moviesMap=", moviesMap);
-    setMoviesMap(moviesMap);
-  });
+    setMoviesMap(moviesMap || {});
+  } else {
+    logD("image map disabled via IMAGE_MAP_ENABLED");
+    setMoviesMap({});
+  }
+});
 }
 
 async function fetchAndLogJsonData(remoteJsonUrl) {
   try {
     return await loadRemoteJsonFile(remoteJsonUrl);
   } catch (error) {
-    console.error(
-      `error to retrieve json map in ${remoteJsonUrl} \n ${error.message} \n only production has nginx set up`
-    );
+    if (process.env.NODE_ENV === "production") {
+      console.error(
+        `error to retrieve json map in ${remoteJsonUrl} \n ${error.message}`
+      );
+    } else {
+      console.warn(
+        `Image map unavailable at ${remoteJsonUrl}. Using empty map (dev).`
+      );
+    }
+    return {};
   }
 }
 

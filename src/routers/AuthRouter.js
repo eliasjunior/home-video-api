@@ -62,7 +62,7 @@ export function createAuthRouter({ refreshTokenStore }) {
       });
 
       return res.status(200).json({ accessToken, refreshToken: newRefreshToken }).end();
-    } catch (error) {
+    } catch {
       return res.status(401).json({ message: "Invalid refresh token" }).end();
     }
   });
@@ -76,7 +76,7 @@ export function createAuthRouter({ refreshTokenStore }) {
     try {
       const payload = verifyRefreshToken(refreshToken);
       refreshTokenStore.delete(payload.jti);
-    } catch (error) {
+    } catch {
       // swallow invalid token on logout
     }
 

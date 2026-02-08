@@ -111,7 +111,10 @@ describe("VideosRouter", () => {
   });
 
   it("GET / redirects to /videos", async () => {
-    const response = await request(app).get("/");
+    const authHeader = await getAuthHeader(app);
+    const response = await request(app)
+      .get("/")
+      .set("Authorization", authHeader);
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/videos");

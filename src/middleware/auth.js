@@ -12,7 +12,7 @@ export function requireAuth(req, res, next) {
     const payload = verifyAccessToken(token);
     req.user = { id: payload.sub, username: payload.username };
     return next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({ message: "Invalid access token" }).end();
   }
 }

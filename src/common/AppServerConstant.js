@@ -14,6 +14,10 @@ export const INTERNAL_SERVER_ERROR = 500;
 export const BASE_STREAM_CALC = 10;
 export const EXPONENT = 7;
 export const IMAGE_RESOURCE = `images`;
-export const IMAGE_FALLBACK_URL = `http://${config.imageServerHost}:${config.imagePort}/${IMAGE_RESOURCE}/${IMG_FALLBACK}`;
+const FALLBACK_BASE_URL = (config.imageFallbackBaseUrl || "").replace(
+  /\/$/,
+  ""
+);
+export const IMAGE_FALLBACK_URL = `${FALLBACK_BASE_URL}/${IMG_FALLBACK}`;
 export const IMAGE_SERVER_URL = `http://${config.imageServerHost}:${config.imagePort}/${IMAGE_RESOURCE}`;
 export const IMAGE_MAP_FILE_NAME = config.imageMapFileName;

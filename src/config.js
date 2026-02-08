@@ -23,6 +23,8 @@ export default function config() {
     SERIES_DIR,
     IMAGES_PORT_SERVER,
     IMAGE_MAP,
+    IMAGE_MAP_ENABLED,
+    IMAGE_FALLBACK_BASE_URL,
   } = process.env;
 
   const result = {};
@@ -39,10 +41,13 @@ export default function config() {
   result.seriesDir = SERIES_DIR;
   result.baseLocation = USER_LOCATION;
   result.serverUrl = `${result.protocol}://${result.host}:${result.port}`;
+  result.imageFallbackBaseUrl =
+    IMAGE_FALLBACK_BASE_URL || `${result.serverUrl}/public`;
   //NGINX and it's not the images url in the AppServerConstant that has /images
   result.imageServerHost = result.host;
   result.imagePort = IMAGES_PORT_SERVER;
   result.imageMapFileName = IMAGE_MAP;
+  result.imageMapEnabled = IMAGE_MAP_ENABLED;
 
   logD("config result", result);
   return result;
@@ -63,6 +68,4 @@ function getLocalIPAddress() {
   }
   return "127.0.0.1"; // Fallback to localhost
 }
-
-
 

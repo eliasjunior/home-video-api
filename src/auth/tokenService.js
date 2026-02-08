@@ -26,28 +26,34 @@ function parseDurationToMs(value) {
 }
 
 export function issueTokens({ userId, username }) {
+  // Access token: short-lived token used on every request (Authorization: Bearer ...)
   const accessToken = jwt.sign(
     { sub: userId, username },
     accessSecret,
     { expiresIn: accessTtl }
   );
 
+  // "jti" is a unique ID for the refresh token so we can revoke/rotate it.
   const jti = crypto.randomUUID();
+  // Refresh token: long-lived token used to get a new access token.
   const refreshToken = jwt.sign(
     { sub: userId, jti, type: "refresh" },
     refreshSecret,
     { expiresIn: refreshTtl }
   );
 
+  // Store refresh token expiry timestamp so the store can enforce max age.
   const refreshExpiresAtMs = Date.now() + parseDurationToMs(refreshTtl);
 
   return { accessToken, refreshToken, jti, refreshExpiresAtMs };
 }
 
 export function verifyAccessToken(token) {
+  // Verifies signature and expiration for access token.
   return jwt.verify(token, accessSecret);
 }
 
 export function verifyRefreshToken(token) {
+  // Verifies signature and expiration for refresh token.
   return jwt.verify(token, refreshSecret);
 }
